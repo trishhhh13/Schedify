@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enter_task_here">Enter task here</string>
+    <string name="submit">Submit</string>
+    <string name="textview">TextView</string>
+    <string name="link">Link:</string>
+    <string name="enter_link_to_the_meeting">Enter link to the meeting</string>
+    <string name="date">Date:</string>
+    <string name="time">Time:</string>
+    <string name="send_to">Send to:</string>
+    <string name="name_or_number">Enter the name or number</string>
+    <string name="message">Message:</string>
+    <string name="enter_the_message">Enter the message</string>
+    <string name="go_to_the_other_activity">Go to the other activity</string>
+</resources>
