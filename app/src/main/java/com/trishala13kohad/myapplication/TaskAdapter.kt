@@ -28,7 +28,10 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val currentNote = allTask[position]
-        holder.textView.text = currentNote.title
+        if(currentNote.title != "")
+            {holder.textView.text = currentNote.title}
+        else
+        {holder.textView.text = currentNote.name}
     }
 
     override fun getItemCount(): Int {

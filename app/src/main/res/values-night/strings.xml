@@ -12,4 +12,9 @@
     <string name="message">Message:</string>
     <string name="enter_the_message">Enter the message</string>
     <string name="go_to_the_other_activity">Go to the other activity</string>
+    <string name="title">Title: </string>
+    <string name="enter_the_title">Enter the title</string>
+    <string name="done">Done</string>
+    <string name="mm_dd_yyyy">MM/DD/YYYY</string>
+    <string name="_00_00">00:00</string>
 </resources>

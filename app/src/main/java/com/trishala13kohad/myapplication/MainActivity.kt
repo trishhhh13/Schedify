@@ -1,6 +1,5 @@
 package com.trishala13kohad.myapplication
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -24,7 +23,8 @@ class MainActivity : AppCompatActivity(), TaskInterface {
         recyclerView.adapter = adapter
 
         viewModel = ViewModelProvider(this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(TaskViewModel::class.java)
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)).
+        get(TaskViewModel::class.java)
 
         viewModel.allTask.observe(this, {list ->
             list?.let {
@@ -44,15 +44,15 @@ class MainActivity : AppCompatActivity(), TaskInterface {
          alertDialog()
     }
     private fun alertDialog() {
+        val message = Intent(this, MessageActivity::class.java)
+        val meeting = Intent(this, MeetingActivity::class.java)
         val dialog = AlertDialog.Builder(this)
-        dialog.setMessage("Choose the type of task:-")
         dialog.setTitle("Task")
-        dialog.setItems(arrayOf("Message", "Meeting")) { dialog, which ->
+        val choice = arrayOf("Message", "Meeting")
+        dialog.setItems(choice) { dialog, which ->
             if (which == 0) {
-                val message: Intent = Intent(this, MessageActivity::class.java)
                 startActivity(message)
             } else {
-                val meeting: Intent = Intent(this, MeetingActivity::class.java)
                 startActivity(meeting)
             }
         }

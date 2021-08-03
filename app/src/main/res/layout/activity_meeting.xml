@@ -3,57 +3,58 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    >
+
 
     <TextView
-        android:id="@+id/Title"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:layout_marginStart="16dp"
-        android:text="@string/send_to"
+        android:text="@string/title"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/titleInput"
+        app:layout_constraintBottom_toBottomOf="@+id/nameInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/titleInput"
+        android:id="@+id/nameInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:layout_marginStart="20dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="@string/name_or_number"
+        android:hint="@string/enter_the_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:autofillHints="Anuj" />
 
     <TextView
-        android:id="@+id/link"
+        android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/message"
+        android:text="@string/link"
         android:layout_marginTop="46dp"
         android:textSize="20sp"
         android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linkInput"
-        app:layout_constraintEnd_toEndOf="@+id/Title"
+        app:layout_constraintBottom_toBottomOf="@+id/messageInput"
+        app:layout_constraintEnd_toEndOf="@+id/name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Title" />
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <EditText
-        android:id="@+id/linkInput"
+        android:id="@+id/messageInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="@string/enter_the_message"
+        android:hint="@string/enter_link_to_the_meeting"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/titleInput"
-        app:layout_constraintTop_toBottomOf="@+id/titleInput"
+        app:layout_constraintStart_toStartOf="@+id/nameInput"
+        app:layout_constraintTop_toBottomOf="@+id/nameInput"
         android:autofillHints="No links provided" />
 
     <TextView
@@ -65,9 +66,9 @@
         android:text="@string/date"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/dateInput"
-        app:layout_constraintEnd_toEndOf="@+id/link"
+        app:layout_constraintEnd_toEndOf="@+id/message"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/link" />
+        app:layout_constraintTop_toBottomOf="@+id/message" />
 
     <EditText
         android:id="@+id/dateInput"
@@ -75,11 +76,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:ems="10"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:hint="@string/mm_dd_yyyy"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/linkInput"
-        app:layout_constraintTop_toBottomOf="@+id/linkInput"
-        android:autofillHints="01/01/2021" />
+        app:layout_constraintStart_toStartOf="@+id/messageInput"
+        app:layout_constraintTop_toBottomOf="@+id/messageInput" />
 
     <TextView
         android:id="@+id/time"
@@ -100,10 +105,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:ems="10"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:inputType="time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/dateInput"
         app:layout_constraintTop_toBottomOf="@+id/dateInput"
-        android:autofillHints="00:00" />
+        android:hint="@string/_00_00" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

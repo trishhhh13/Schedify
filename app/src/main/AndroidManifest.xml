@@ -4,6 +4,7 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -11,9 +12,13 @@
         android:theme="@style/Theme.Schedify">
         <activity
             android:name=".MessageActivity"
+            android:label="Message"
+            android:parentActivityName=".MainActivity"
             android:exported="true" />
         <activity
             android:name=".MeetingActivity"
+            android:label="Meeting"
+            android:parentActivityName=".MainActivity"
             android:exported="true" />
         <activity
             android:name=".MainActivity"
