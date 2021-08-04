@@ -2,7 +2,6 @@ package com.trishala13kohad.myapplication
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -42,18 +41,19 @@ class MeetingActivity : AppCompatActivity() {
             updateTimeInView()
         }
         dateInput.setOnClickListener {
-            DatePickerDialog(
+            val bro = DatePickerDialog(
                 this@MeetingActivity,
                 dateSetListener,
                 // set DatePickerDialog to point to today's date when it loads up
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-            ).show()
+                cal.get(Calendar.DAY_OF_MONTH))
+            bro.datePicker.minDate = cal.timeInMillis
+            bro.show()
         }
         timeInput.setOnClickListener {
             TimePickerDialog(this,timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
-            cal.get(Calendar.MINUTE), false).show()
+            cal.get(Calendar.MINUTE), true).show()
         }
     }
 
@@ -76,34 +76,27 @@ class MeetingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_favorite) {
-            val title: EditText = findViewById(R.id.nameInput)
-            val titleInput = title.text.toString()
-            val link: EditText = findViewById(R.id.messageInput)
-            val linkInput = link.text.toString()
-            val date: EditText = findViewById(R.id.dateInput)
-            val dateInpu = date.text.toString()
-            val time: EditText = findViewById(R.id.timeInput)
-            val timeInput = time.text.toString()
-            if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInpu.isNotEmpty()
-                && timeInput.isNotEmpty()
-            ) {
-                viewModel.insertTask(
-                    Task(
-                        titleInput, "", linkInput, "",
-                        dateInpu, timeInput
-                    )
-                )
-                val trying = Intent(this, MainActivity::class.java)
-                startActivity(trying)
-                Toast.makeText(this, "Action clicked", Toast.LENGTH_SHORT).show()
-            } else
-                Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
-            return true
+            if (id == R.id.action_favorite) {
+                val title: EditText = findViewById(R.id.nameInput)
+                val titleInput = title.text.toString()
+                val link: EditText = findViewById(R.id.messageInput)
+                val linkInput = link.text.toString()
+                val date: EditText = findViewById(R.id.dateInput)
+                val dateInpu = date.text.toString()
+                val time: EditText = findViewById(R.id.timeInput)
+                val timeInput = time.text.toString()
+                if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInpu.isNotEmpty()
+                    && timeInput.isNotEmpty()) {
+                    viewModel.insertTask(Task(titleInput, "", linkInput, "",
+                            dateInpu, timeInput))
+                    finish()
+                    Toast.makeText(this, "Action clicked", Toast.LENGTH_SHORT).show()
+                } else
+                    Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            return super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
-    }
 }
 
 

@@ -18,6 +18,7 @@
         android:padding="12dp"
         android:textSize="16sp"
         tools:text="Tanu"
+        android:onClick="clickedMe"
         android:textColor="@color/black"/>
     <ImageView
         android:id="@+id/deleteButton"

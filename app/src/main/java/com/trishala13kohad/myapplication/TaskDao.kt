@@ -17,4 +17,10 @@ interface TaskDao {
 
     @Query("Select * from task_table order by id ASC")
     fun getAllTask(): LiveData<List<Task>>
+
+    @Query("Select * from task_table WHERE title LIKE :title")
+    fun findByTitle(title: String): LiveData<List<Task>>
+
+    @Query("Select * from task_table WHERE message LIKe :message")
+    fun findByMessage(message: String): LiveData<List<Task>>
 }

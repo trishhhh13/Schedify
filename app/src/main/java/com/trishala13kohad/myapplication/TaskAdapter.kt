@@ -23,6 +23,9 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         viewHolder.delButton.setOnClickListener {
             listener.onItemClicked(allTask[viewHolder.adapterPosition])
         }
+        viewHolder.textView.setOnClickListener {
+            listener.clickedMe(allTask[viewHolder.adapterPosition])
+        }
         return viewHolder
     }
 
@@ -47,4 +50,5 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
 }
 interface TaskInterface{
     fun onItemClicked(task: Task)
+    fun clickedMe(task:Task)
 }

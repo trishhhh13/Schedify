@@ -3,6 +3,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -34,10 +35,14 @@ class MainActivity : AppCompatActivity(), TaskInterface {
         })
     }
 
-    override fun onItemClicked(task: Task) {
+    override fun clickedMe(task: Task) {
+        val textView: TextView = findViewById(R.id.text)
+        Toast.makeText(this, "Clicked",Toast.LENGTH_SHORT).show()
+    }
 
+    override fun onItemClicked(task: Task) {
         viewModel.deleteTask(task)
-        Toast.makeText(this, "Deleted the note", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Deleted the task", Toast.LENGTH_SHORT).show()
     }
 
     fun chooseType(view: View) {

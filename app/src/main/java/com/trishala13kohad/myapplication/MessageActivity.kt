@@ -27,6 +27,7 @@ class MessageActivity : AppCompatActivity() {
         get(TaskViewModel::class.java)
         dateInput = findViewById(R.id.dateInput)
         timeInput = findViewById(R.id.timeInput)
+        cal.add(Calendar.HOUR, -1)
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -40,18 +41,26 @@ class MessageActivity : AppCompatActivity() {
             updateTimeInView()
         }
         dateInput.setOnClickListener {
-            DatePickerDialog(
+            val bro = DatePickerDialog(
                 this,
                 dateSetListener,
                 // set DatePickerDialog to point to today's date when it loads up
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
-            ).show()
+            )
+
+            bro.datePicker.minDate = cal.timeInMillis
+            bro.show()
+
+
         }
         timeInput.setOnClickListener {
-            TimePickerDialog(this,timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
-                cal.get(Calendar.MINUTE), false).show()
+
+            TimePickerDialog(this,timeSetListener,
+                cal.get(Calendar.HOUR_OF_DAY),
+                cal.get(Calendar.MINUTE), true).show()
+
         }
     }
     private fun updateDateInView() {
@@ -87,9 +96,7 @@ class MessageActivity : AppCompatActivity() {
                 && timeInput.isNotEmpty()){
                 viewModel.insertTask(Task("", nameInput, "",
                     messageInput, dateInput, timeInput))
-                val trying = Intent(this, MainActivity::class.java)
-                startActivity(trying)
-                Toast.makeText(this, "Action clicked", Toast.LENGTH_SHORT).show()
+                finish()
             }
             else
                 Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
