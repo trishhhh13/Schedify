@@ -7,19 +7,19 @@
 
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/titleM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:layout_marginStart="16dp"
         android:text="@string/title"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/nameInput"
+        app:layout_constraintBottom_toBottomOf="@+id/titleInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/nameInput"
+        android:id="@+id/titleInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
@@ -32,20 +32,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/link"
         android:layout_marginTop="46dp"
         android:textSize="20sp"
         android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/messageInput"
-        app:layout_constraintEnd_toEndOf="@+id/name"
+        app:layout_constraintBottom_toBottomOf="@+id/linkInput"
+        app:layout_constraintEnd_toEndOf="@+id/titleM"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/titleM" />
 
     <EditText
-        android:id="@+id/messageInput"
+        android:id="@+id/linkInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -55,24 +55,24 @@
         android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/nameInput"
-        app:layout_constraintTop_toBottomOf="@+id/nameInput" />
+        app:layout_constraintStart_toStartOf="@+id/titleInput"
+        app:layout_constraintTop_toBottomOf="@+id/titleInput" />
 
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/dateM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="46dp"
         android:layout_marginStart="20dp"
         android:text="@string/date"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/dateInput"
-        app:layout_constraintEnd_toEndOf="@+id/message"
+        app:layout_constraintBottom_toBottomOf="@+id/dateInputM"
+        app:layout_constraintEnd_toEndOf="@+id/link"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message" />
+        app:layout_constraintTop_toBottomOf="@+id/link" />
 
     <EditText
-        android:id="@+id/dateInput"
+        android:id="@+id/dateInputM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -85,24 +85,24 @@
         android:inputType="date"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/messageInput"
-        app:layout_constraintTop_toBottomOf="@+id/messageInput" />
+        app:layout_constraintStart_toStartOf="@+id/linkInput"
+        app:layout_constraintTop_toBottomOf="@+id/linkInput" />
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/timeM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="46dp"
         android:layout_marginStart="20dp"
         android:textSize="20sp"
         android:text="@string/time"
-        app:layout_constraintBottom_toBottomOf="@+id/timeInput"
-        app:layout_constraintEnd_toEndOf="@+id/date"
+        app:layout_constraintBottom_toBottomOf="@+id/timeInputM"
+        app:layout_constraintEnd_toEndOf="@+id/dateM"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date" />
+        app:layout_constraintTop_toBottomOf="@+id/dateM" />
 
     <EditText
-        android:id="@+id/timeInput"
+        android:id="@+id/timeInputM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -115,7 +115,7 @@
         android:inputType="time"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/dateInput"
-        app:layout_constraintTop_toBottomOf="@+id/dateInput" />
+        app:layout_constraintStart_toStartOf="@+id/dateInputM"
+        app:layout_constraintTop_toBottomOf="@+id/dateInputM" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

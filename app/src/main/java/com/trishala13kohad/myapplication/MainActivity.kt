@@ -14,11 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 class MainActivity : AppCompatActivity(), TaskInterface {
 
     private lateinit var viewModel: TaskViewModel
+    private lateinit var recyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val recyclerView: RecyclerView = (findViewById(R.id.recyclerView))
+        recyclerView = (findViewById(R.id.recyclerView))
         recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = TaskAdapter(this, this)
         recyclerView.adapter = adapter
@@ -26,18 +27,38 @@ class MainActivity : AppCompatActivity(), TaskInterface {
         viewModel = ViewModelProvider(this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)).
         get(TaskViewModel::class.java)
-
+        val textView: TextView = findViewById(R.id.input)
         viewModel.allTask.observe(this, {list ->
             list?.let {
                 adapter.updateList(it)
+                if(adapter.itemCount != 0){
+                    textView.visibility = View.GONE
+                }
+                else{
+                    textView.visibility = View.VISIBLE
+                }
             }
 
         })
     }
 
-    override fun clickedMe(task: Task) {
-        val textView: TextView = findViewById(R.id.text)
+    override fun clickedMe(task: Task, position: Int) {
         Toast.makeText(this, "Clicked",Toast.LENGTH_SHORT).show()
+        val text= task.title
+        val textM = task.message
+        val thread = Thread {
+                    val checkByTitle: List<Task> = viewModel.taskByTitle(text)
+                    val checkByMessage: List<Task> = viewModel.taskByMessage(textM)
+                    val taskAdapter = TaskAdapter(this, this)
+            if(text.isNotEmpty())
+                    taskAdapter.openMeeting(checkByTitle)
+            else
+                taskAdapter.openMessage(checkByMessage)
+
+        }
+//        taskAdapter.openMessage(checkByMessage)
+        thread.start()
+//        val openMeeting = Intent(this, MeetingActivity::class.java)
     }
 
     override fun onItemClicked(task: Task) {

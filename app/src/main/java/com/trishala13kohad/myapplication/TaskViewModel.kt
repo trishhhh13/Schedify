@@ -18,10 +18,10 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
         repository = TaskRepository(dao)
         allTask = repository.allTask
     }
-    fun taskByTitle(title: String): LiveData<List<Task>> {
+    fun taskByTitle(title: String): List<Task> {
         return repository.taskByTitle(title)
     }
-    fun taskByMessage(message: String): LiveData<List<Task>> {
+    fun taskByMessage(message: String): List<Task> {
         return repository.taskByMessage(message)
     }
     fun deleteTask(task:Task){

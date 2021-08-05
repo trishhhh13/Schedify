@@ -19,8 +19,8 @@ interface TaskDao {
     fun getAllTask(): LiveData<List<Task>>
 
     @Query("Select * from task_table WHERE title LIKE :title")
-    fun findByTitle(title: String): LiveData<List<Task>>
+    fun findByTitle(title: String): List<Task>
 
     @Query("Select * from task_table WHERE message LIKe :message")
-    fun findByMessage(message: String): LiveData<List<Task>>
+    fun findByMessage(message: String): List<Task>
 }

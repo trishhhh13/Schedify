@@ -2,13 +2,13 @@ package com.trishala13kohad.myapplication
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,12 +22,27 @@ class MessageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
+
+        val intent = intent
+        val namei = intent.getStringExtra("name")
+        val messagei = intent.getStringExtra("message")
+        val datei = intent.getStringExtra("date")
+        val timei = intent.getStringExtra("time")
+        if (namei != null && messagei != null && datei != null) {
+            val name: EditText = findViewById(R.id.nameInput)
+            name.setText(namei)
+            val message: EditText = findViewById(R.id.messageInput)
+            message.setText(messagei)
+            val date: EditText = findViewById(R.id.dateInput)
+            date.setText(datei)
+            val time: EditText = findViewById(R.id.timeInput)
+            time.setText(timei)
+        }
         viewModel = ViewModelProvider(this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)).
         get(TaskViewModel::class.java)
         dateInput = findViewById(R.id.dateInput)
         timeInput = findViewById(R.id.timeInput)
-        cal.add(Calendar.HOUR, -1)
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)

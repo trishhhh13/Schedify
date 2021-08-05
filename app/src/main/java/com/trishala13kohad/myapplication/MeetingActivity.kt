@@ -22,41 +22,60 @@ class MeetingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meeting)
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(TaskViewModel::class.java)
-        dateInput = findViewById(R.id.dateInput)
-        timeInput = findViewById(R.id.timeInput)
-        val dateSetListener =
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, monthOfYear)
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateDateInView()
-            }
-        val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-            cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            cal.set(Calendar.MINUTE, minute)
-            updateTimeInView()
-        }
-        dateInput.setOnClickListener {
-            val bro = DatePickerDialog(
-                this@MeetingActivity,
-                dateSetListener,
-                // set DatePickerDialog to point to today's date when it loads up
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH))
-            bro.datePicker.minDate = cal.timeInMillis
-            bro.show()
-        }
-        timeInput.setOnClickListener {
-            TimePickerDialog(this,timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
-            cal.get(Calendar.MINUTE), true).show()
-        }
-    }
 
+        val intent = intent
+        val titlei = intent.getStringExtra("title")
+        val urli = intent.getStringExtra("url")
+        val datei = intent.getStringExtra("date")
+        val timei = intent.getStringExtra("time")
+        if (titlei != null && urli != null && datei != null) {
+            val title: EditText = findViewById(R.id.titleInput)
+            title.setText(titlei)
+            val link: EditText = findViewById(R.id.linkInput)
+            link.setText(urli)
+            val date: EditText = findViewById(R.id.dateInputM)
+            date.setText(datei)
+            val time: EditText = findViewById(R.id.timeInputM)
+            time.setText(timei)
+        }
+            viewModel = ViewModelProvider(
+                this,
+                ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+            ).get(TaskViewModel::class.java)
+            dateInput = findViewById(R.id.dateInputM)
+            timeInput = findViewById(R.id.timeInputM)
+            val dateSetListener =
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                    cal.set(Calendar.YEAR, year)
+                    cal.set(Calendar.MONTH, monthOfYear)
+                    cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    updateDateInView()
+                }
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                cal.set(Calendar.MINUTE, minute)
+                updateTimeInView()
+            }
+            dateInput.setOnClickListener {
+                val bro = DatePickerDialog(
+                    this@MeetingActivity,
+                    dateSetListener,
+                    // set DatePickerDialog to point to today's date when it loads up
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH)
+                )
+                bro.datePicker.minDate = cal.timeInMillis
+                bro.show()
+            }
+            timeInput.setOnClickListener {
+                TimePickerDialog(
+                    this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
+                    cal.get(Calendar.MINUTE), true
+                ).show()
+            }
+
+    }
     private fun updateDateInView() {
         val myFormat = "MM/dd/yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
@@ -77,13 +96,13 @@ class MeetingActivity : AppCompatActivity() {
         val id = item.itemId
 
             if (id == R.id.action_favorite) {
-                val title: EditText = findViewById(R.id.nameInput)
+                val title: EditText = findViewById(R.id.titleInput)
                 val titleInput = title.text.toString()
-                val link: EditText = findViewById(R.id.messageInput)
+                val link: EditText = findViewById(R.id.linkInput)
                 val linkInput = link.text.toString()
-                val date: EditText = findViewById(R.id.dateInput)
+                val date: EditText = findViewById(R.id.dateInputM)
                 val dateInpu = date.text.toString()
-                val time: EditText = findViewById(R.id.timeInput)
+                val time: EditText = findViewById(R.id.timeInputM)
                 val timeInput = time.text.toString()
                 if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInpu.isNotEmpty()
                     && timeInput.isNotEmpty()) {

@@ -6,10 +6,10 @@ class TaskRepository(private val taskDao: TaskDao) {
 
     val allTask: LiveData<List<Task>> = taskDao.getAllTask()
 
-    fun taskByTitle(title: String) : LiveData<List<Task>> {
+    fun taskByTitle(title: String) : List<Task> {
         return taskDao.findByTitle(title)
     }
-    fun taskByMessage(message: String): LiveData<List<Task>> {
+    fun taskByMessage(message: String): List<Task> {
         return taskDao.findByMessage(message)
     }
 
