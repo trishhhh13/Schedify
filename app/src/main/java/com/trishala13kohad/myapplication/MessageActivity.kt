@@ -28,16 +28,17 @@ class MessageActivity : AppCompatActivity() {
         val messagei = intent.getStringExtra("message")
         val datei = intent.getStringExtra("date")
         val timei = intent.getStringExtra("time")
+
         if (namei != null && messagei != null && datei != null) {
             edit = true
             val name: EditText = findViewById(R.id.nameInput)
             name.setText(namei)
             val message: EditText = findViewById(R.id.messageInput)
             message.setText(messagei)
-            val date: EditText = findViewById(R.id.dateInput)
-            date.setText(datei)
-            val time: EditText = findViewById(R.id.timeInput)
-            time.setText(timei)
+            dateInput = findViewById(R.id.dateInput)
+            dateInput.setText(datei)
+            timeInput= findViewById(R.id.timeInput)
+            timeInput.setText(timei)
         }
         viewModel = ViewModelProvider(this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)).
@@ -134,6 +135,9 @@ class MessageActivity : AppCompatActivity() {
                 Toast.makeText(this , "Updated Successfully", Toast.LENGTH_SHORT).show()
                 finish()
             }
+            else
+                Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
+            return true
         }
         return super.onOptionsItemSelected(item)
     }

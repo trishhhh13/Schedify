@@ -98,22 +98,22 @@ class MeetingActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+        title = findViewById(R.id.titleInput)
+        link = findViewById(R.id.linkInput)
+        dateInput = findViewById(R.id.dateInputM)
+        timeInput = findViewById(R.id.timeInputM)
             if (id == R.id.action_favorite && !edit) {
-                val title: EditText = findViewById(R.id.titleInput)
                 val titleInput = title.text.toString()
-                val link: EditText = findViewById(R.id.linkInput)
                 val linkInput = link.text.toString()
-                val date: EditText = findViewById(R.id.dateInputM)
-                val dateInpu = date.text.toString()
-                val time: EditText = findViewById(R.id.timeInputM)
-                val timeInput = time.text.toString()
+                val dateInpu = dateInput.text.toString()
+                val timeInpu = timeInput.text.toString()
                 if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInpu.isNotEmpty()
-                    && timeInput.isNotEmpty()
+                    && timeInpu.isNotEmpty()
                 ) {
                     viewModel.insertTask(
                         Task(
                             titleInput, "", linkInput, "",
-                            dateInpu, timeInput
+                            dateInpu, timeInpu
                         )
                     )
                     finish()
@@ -122,15 +122,10 @@ class MeetingActivity : AppCompatActivity() {
                     Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
             }
                 else if( edit) {
-                    Toast.makeText(this,"In edit", Toast.LENGTH_SHORT).show()
-                    val titleE: EditText = findViewById(R.id.titleInput)
-                     val titleIn = titleE.text.toString()
-                    val linkE: EditText = findViewById(R.id.linkInput)
-                    val linkIn = linkE.text.toString()
-                    val dateE: EditText = findViewById(R.id.dateInputM)
-                    val dateIn = dateE.text.toString()
-                    val timeE: EditText = findViewById(R.id.timeInputM)
-                    val timeIn = timeE.text.toString()
+                     val titleIn = title.text.toString()
+                    val linkIn = link.text.toString()
+                    val dateIn = dateInput.text.toString()
+                    val timeIn = timeInput.text.toString()
                     if (titleIn.isNotEmpty() && linkIn.isNotEmpty() && dateIn.isNotEmpty()
                         && timeIn.isNotEmpty()) {
                         viewModel.updateTask(Task(titleIn, "", linkIn, "",
@@ -138,6 +133,9 @@ class MeetingActivity : AppCompatActivity() {
                         finish()
 //                    viewModel.updateTask(Task())
                     }
+                else
+                    Toast.makeText(this,"Fill the details", Toast.LENGTH_SHORT).show()
+                return true
                 }
 
             return super.onOptionsItemSelected(item)

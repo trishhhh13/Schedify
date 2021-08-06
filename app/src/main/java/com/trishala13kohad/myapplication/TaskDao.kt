@@ -12,7 +12,7 @@ interface TaskDao {
     @Delete
     suspend fun delete(task: Task)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     suspend fun update(task: Task)
 
     @Query("Select * from task_table order by id ASC")
