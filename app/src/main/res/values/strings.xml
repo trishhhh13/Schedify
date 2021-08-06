@@ -18,5 +18,5 @@
     <string name="enter_the_title">Enter the title</string>
     <string name="done">Done</string>
     <string name="mm_dd_yyyy">MM/DD/YYYY</string>
-    <string name="_00_00">00:00</string>
+    <string name="_00_00">00:00 AM</string>
 </resources>

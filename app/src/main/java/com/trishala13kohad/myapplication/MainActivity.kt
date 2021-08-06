@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity(), TaskInterface {
     }
 
     override fun clickedMe(task: Task, position: Int) {
-        Toast.makeText(this, "Clicked",Toast.LENGTH_SHORT).show()
         val text= task.title
         val textM = task.message
         val thread = Thread {

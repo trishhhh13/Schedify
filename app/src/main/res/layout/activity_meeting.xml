@@ -26,7 +26,7 @@
         android:autofillHints="Anuj"
         android:ems="10"
         android:hint="@string/enter_the_title"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|textCapSentences"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

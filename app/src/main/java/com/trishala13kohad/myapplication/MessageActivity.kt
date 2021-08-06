@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import java.text.SimpleDateFormat
 import java.util.*
@@ -17,6 +16,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var viewModel: TaskViewModel
     private lateinit var dateInput: EditText
     private lateinit var timeInput: EditText
+    var edit = false
     private var cal: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +29,7 @@ class MessageActivity : AppCompatActivity() {
         val datei = intent.getStringExtra("date")
         val timei = intent.getStringExtra("time")
         if (namei != null && messagei != null && datei != null) {
+            edit = true
             val name: EditText = findViewById(R.id.nameInput)
             name.setText(namei)
             val message: EditText = findViewById(R.id.messageInput)
@@ -74,7 +75,7 @@ class MessageActivity : AppCompatActivity() {
 
             TimePickerDialog(this,timeSetListener,
                 cal.get(Calendar.HOUR_OF_DAY),
-                cal.get(Calendar.MINUTE), true).show()
+                cal.get(Calendar.MINUTE), false).show()
 
         }
     }
@@ -84,7 +85,7 @@ class MessageActivity : AppCompatActivity() {
         dateInput.setText(sdf.format(cal.time))
     }
     private fun updateTimeInView() {
-        val myFormat = "HH:MM"
+        val myFormat = "HH:mm aa"
         val stf = SimpleDateFormat(myFormat, Locale.US)
         timeInput.setText((stf.format(cal.time)))
     }
@@ -98,7 +99,7 @@ class MessageActivity : AppCompatActivity() {
         val id = item.itemId
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_favorite) {
+        if (id == R.id.action_favorite && !edit) {
             val name: EditText = findViewById(R.id.nameInput)
             val nameInput = name.text.toString()
             val message: EditText = findViewById(R.id.messageInput)
@@ -116,6 +117,23 @@ class MessageActivity : AppCompatActivity() {
             else
                 Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
             return true
+        }
+        else if(edit){
+            val name: EditText = findViewById(R.id.nameInput)
+            val nameInput = name.text.toString()
+            val message: EditText = findViewById(R.id.messageInput)
+            val messageInput = message.text.toString()
+            val date: EditText = findViewById(R.id.dateInput)
+            val dateInput = date.text.toString()
+            val time: EditText = findViewById(R.id.timeInput)
+            val timeInput = time.text.toString()
+            if(nameInput.isNotEmpty() && messageInput.isNotEmpty() && dateInput.isNotEmpty()
+                && timeInput.isNotEmpty()){
+                viewModel.updateTask(Task("", nameInput, "",
+                    messageInput, dateInput, timeInput))
+                Toast.makeText(this , "Updated Successfully", Toast.LENGTH_SHORT).show()
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }

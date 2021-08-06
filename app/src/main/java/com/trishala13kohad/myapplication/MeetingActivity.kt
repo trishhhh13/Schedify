@@ -17,6 +17,9 @@ class MeetingActivity : AppCompatActivity() {
     private lateinit var viewModel: TaskViewModel
     private lateinit var dateInput: EditText
     private lateinit var timeInput: EditText
+    private lateinit var title: EditText
+    private lateinit var link: EditText
+    var edit = false
     private var cal: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,14 +32,15 @@ class MeetingActivity : AppCompatActivity() {
         val datei = intent.getStringExtra("date")
         val timei = intent.getStringExtra("time")
         if (titlei != null && urli != null && datei != null) {
-            val title: EditText = findViewById(R.id.titleInput)
+            edit = true
+            title= findViewById(R.id.titleInput)
             title.setText(titlei)
-            val link: EditText = findViewById(R.id.linkInput)
+            link= findViewById(R.id.linkInput)
             link.setText(urli)
-            val date: EditText = findViewById(R.id.dateInputM)
-            date.setText(datei)
-            val time: EditText = findViewById(R.id.timeInputM)
-            time.setText(timei)
+            dateInput =  findViewById(R.id.dateInputM)
+            dateInput.setText(datei)
+            timeInput = findViewById(R.id.timeInputM)
+            timeInput.setText(timei)
         }
             viewModel = ViewModelProvider(
                 this,
@@ -70,8 +74,8 @@ class MeetingActivity : AppCompatActivity() {
             }
             timeInput.setOnClickListener {
                 TimePickerDialog(
-                    this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
-                    cal.get(Calendar.MINUTE), true
+                    this@MeetingActivity, timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
+                    cal.get(Calendar.MINUTE), false
                 ).show()
             }
 
@@ -82,7 +86,7 @@ class MeetingActivity : AppCompatActivity() {
         dateInput.setText(sdf.format(cal.time))
     }
     private fun updateTimeInView() {
-        val myFormat = "HH:MM"
+        val myFormat = "HH:mm aa"
         val stf = SimpleDateFormat(myFormat, Locale.US)
         timeInput.setText((stf.format(cal.time)))
     }
@@ -94,8 +98,7 @@ class MeetingActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-
-            if (id == R.id.action_favorite) {
+            if (id == R.id.action_favorite && !edit) {
                 val title: EditText = findViewById(R.id.titleInput)
                 val titleInput = title.text.toString()
                 val link: EditText = findViewById(R.id.linkInput)
@@ -105,15 +108,38 @@ class MeetingActivity : AppCompatActivity() {
                 val time: EditText = findViewById(R.id.timeInputM)
                 val timeInput = time.text.toString()
                 if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInpu.isNotEmpty()
-                    && timeInput.isNotEmpty()) {
-                    viewModel.insertTask(Task(titleInput, "", linkInput, "",
-                            dateInpu, timeInput))
+                    && timeInput.isNotEmpty()
+                ) {
+                    viewModel.insertTask(
+                        Task(
+                            titleInput, "", linkInput, "",
+                            dateInpu, timeInput
+                        )
+                    )
                     finish()
-                    Toast.makeText(this, "Action clicked", Toast.LENGTH_SHORT).show()
-                } else
+                }
+                else
                     Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
-                return true
             }
+                else if( edit) {
+                    Toast.makeText(this,"In edit", Toast.LENGTH_SHORT).show()
+                    val titleE: EditText = findViewById(R.id.titleInput)
+                     val titleIn = titleE.text.toString()
+                    val linkE: EditText = findViewById(R.id.linkInput)
+                    val linkIn = linkE.text.toString()
+                    val dateE: EditText = findViewById(R.id.dateInputM)
+                    val dateIn = dateE.text.toString()
+                    val timeE: EditText = findViewById(R.id.timeInputM)
+                    val timeIn = timeE.text.toString()
+                    if (titleIn.isNotEmpty() && linkIn.isNotEmpty() && dateIn.isNotEmpty()
+                        && timeIn.isNotEmpty()) {
+                        viewModel.updateTask(Task(titleIn, "", linkIn, "",
+                                dateIn, timeIn))
+                        finish()
+//                    viewModel.updateTask(Task())
+                    }
+                }
+
             return super.onOptionsItemSelected(item)
         }
 }

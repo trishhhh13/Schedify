@@ -27,7 +27,7 @@
         android:autofillHints="Anuj"
         android:ems="10"
         android:hint="@string/name_or_number"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|textCapSentences"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +53,7 @@
         android:autofillHints="No links provided"
         android:ems="10"
         android:hint="@string/enter_the_message"
-        android:inputType="textPersonName"
+        android:inputType="textCapSentences|textMultiLine"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/nameInput"
