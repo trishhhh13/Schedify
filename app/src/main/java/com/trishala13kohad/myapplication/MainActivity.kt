@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity(), TaskInterface {
                     textView.visibility = View.VISIBLE
                 }
             }
-
         })
     }
 

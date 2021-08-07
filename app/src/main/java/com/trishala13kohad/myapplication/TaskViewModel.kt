@@ -34,10 +34,18 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
             repository.insert(task)
         }
     }
-    fun updateTask(task: Task){
+    fun updateTaskByTitle(title: String, name: String, url: String, message:
+    String, date: String, time: String, oldTitle: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.update(task)
+            repository.taskTitleUpdate(title, name, url, message, date, time, oldTitle)
         }
     }
+    fun updateTaskByMessage(title: String, name: String, url: String, message:
+    String, date: String, time: String, oldName: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.taskMessageUpdate(title, name, url, message, date, time, oldName)
+        }
+    }
+
 
 }

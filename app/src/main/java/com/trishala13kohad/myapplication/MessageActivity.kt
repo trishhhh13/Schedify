@@ -16,6 +16,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var viewModel: TaskViewModel
     private lateinit var dateInput: EditText
     private lateinit var timeInput: EditText
+    private var namei :String? = null
     var edit = false
     private var cal: Calendar = Calendar.getInstance()
 
@@ -24,7 +25,7 @@ class MessageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_message)
 
         val intent = intent
-        val namei = intent.getStringExtra("name")
+        namei = intent.getStringExtra("name")
         val messagei = intent.getStringExtra("message")
         val datei = intent.getStringExtra("date")
         val timei = intent.getStringExtra("time")
@@ -130,12 +131,12 @@ class MessageActivity : AppCompatActivity() {
             val timeInput = time.text.toString()
             if(nameInput.isNotEmpty() && messageInput.isNotEmpty() && dateInput.isNotEmpty()
                 && timeInput.isNotEmpty()){
-                viewModel.updateTask(Task("", nameInput, "",
-                    messageInput, dateInput, timeInput))
+                viewModel.updateTaskByMessage("", nameInput, "",
+                    messageInput, dateInput, timeInput, namei)
                 Toast.makeText(this , "Updated Successfully", Toast.LENGTH_SHORT).show()
                 finish()
             }
-            else
+              else
                 Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
             return true
         }

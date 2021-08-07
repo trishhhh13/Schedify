@@ -87,7 +87,8 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/messageInput"
-        app:layout_constraintTop_toBottomOf="@+id/messageInput" />
+        app:layout_constraintTop_toBottomOf="@+id/messageInput"
+        android:autofillHints="To add date" />
 
     <TextView
         android:id="@+id/time"
@@ -117,6 +118,7 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/dateInput"
-        app:layout_constraintTop_toBottomOf="@+id/dateInput" />
+        app:layout_constraintTop_toBottomOf="@+id/dateInput"
+        android:autofillHints="To add time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

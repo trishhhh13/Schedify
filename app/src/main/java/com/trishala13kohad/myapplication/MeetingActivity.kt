@@ -19,6 +19,7 @@ class MeetingActivity : AppCompatActivity() {
     private lateinit var timeInput: EditText
     private lateinit var title: EditText
     private lateinit var link: EditText
+    private var titlei :String? = null
     var edit = false
     private var cal: Calendar = Calendar.getInstance()
 
@@ -27,7 +28,7 @@ class MeetingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_meeting)
 
         val intent = intent
-        val titlei = intent.getStringExtra("title")
+        titlei = intent.getStringExtra("title")
         val urli = intent.getStringExtra("url")
         val datei = intent.getStringExtra("date")
         val timei = intent.getStringExtra("time")
@@ -128,10 +129,9 @@ class MeetingActivity : AppCompatActivity() {
                     val timeIn = timeInput.text.toString()
                     if (titleIn.isNotEmpty() && linkIn.isNotEmpty() && dateIn.isNotEmpty()
                         && timeIn.isNotEmpty()) {
-                        viewModel.updateTask(Task(titleIn, "", linkIn, "",
-                                dateIn, timeIn))
+                        viewModel.updateTaskByTitle(titleIn, "", linkIn, "",
+                                dateIn, timeIn, titlei)
                         finish()
-//                    viewModel.updateTask(Task())
                     }
                 else
                     Toast.makeText(this,"Fill the details", Toast.LENGTH_SHORT).show()

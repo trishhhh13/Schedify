@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
 
     <TextView
@@ -86,7 +85,8 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/linkInput"
-        app:layout_constraintTop_toBottomOf="@+id/linkInput" />
+        app:layout_constraintTop_toBottomOf="@+id/linkInput"
+        android:autofillHints="To add date" />
 
     <TextView
         android:id="@+id/timeM"
@@ -116,6 +116,7 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/dateInputM"
-        app:layout_constraintTop_toBottomOf="@+id/dateInputM" />
+        app:layout_constraintTop_toBottomOf="@+id/dateInputM"
+        android:autofillHints="To add time input" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

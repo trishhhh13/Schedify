@@ -19,14 +19,15 @@
         android:textSize="16sp"
         tools:text="Tanu"
         android:onClick="clickedMe"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        tools:ignore="UsingOnClickInXml" />
     <ImageView
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:src="@drawable/ic_baseline_delete_forever_24"
-        app:layout_constraintTop_toTopOf="@id/text"
+        app:layout_constraintTop_toTopOf="@id/textList"
         app:layout_constraintRight_toRightOf="parent"
         android:contentDescription="@string/deleting_the_node" />
 

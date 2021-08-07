@@ -20,7 +20,12 @@ class TaskRepository(private val taskDao: TaskDao) {
     suspend fun delete(task: Task){
         taskDao.delete(task)
     }
-    suspend fun update(task: Task){
-        taskDao.update(task)
+
+    fun taskTitleUpdate(title: String, name: String, url: String, message: String, date: String, time: String, oldTitle: String?){
+        taskDao.taskUpdateByTitle(title, name,url , message, date, time, oldTitle)
     }
+    fun taskMessageUpdate(title: String, name: String, url: String, message: String, date: String, time: String, oldName: String?){
+        taskDao.taskUpdateByTitle(title, name,url , message, date, time, oldName)
+    }
+
 }
