@@ -17,8 +17,9 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var dateInput: EditText
     private lateinit var timeInput: EditText
     private var namei :String? = null
-    var edit = false
+    private var edit = false
     private var cal: Calendar = Calendar.getInstance()
+    private var cali: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +69,7 @@ class MessageActivity : AppCompatActivity() {
                 cal.get(Calendar.DAY_OF_MONTH)
             )
 
-            bro.datePicker.minDate = cal.timeInMillis
+            bro.datePicker.minDate = cali.timeInMillis
             bro.show()
 
 
@@ -87,9 +88,15 @@ class MessageActivity : AppCompatActivity() {
         dateInput.setText(sdf.format(cal.time))
     }
     private fun updateTimeInView() {
-        val myFormat = "HH:mm aa"
-        val stf = SimpleDateFormat(myFormat, Locale.US)
-        timeInput.setText((stf.format(cal.time)))
+        if(cal.timeInMillis >= cali.timeInMillis) {
+            val myFormat = "hh:mm aa"
+            val stf = SimpleDateFormat(myFormat, Locale.US)
+            timeInput.setText((stf.format(cal.time)))
+        }
+        else
+        {
+            Toast.makeText(this, "Invalid time", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

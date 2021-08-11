@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,11 +10,11 @@
         android:id="@+id/titleM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
         android:text="@string/title"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/titleInput"
+        app:layout_constraintEnd_toStartOf="@+id/titleInput"
+        app:layout_constraintHorizontal_bias="0.245"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,25 +22,27 @@
         android:id="@+id/titleInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="15dp"
         android:autofillHints="Anuj"
         android:ems="10"
         android:hint="@string/enter_the_title"
         android:inputType="textPersonName|textCapSentences"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/linkInput"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
         android:text="@string/link"
-        android:layout_marginTop="46dp"
         android:textSize="20sp"
-        android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linkInput"
-        app:layout_constraintEnd_toEndOf="@+id/titleM"
+        app:layout_constraintEnd_toStartOf="@+id/linkInput"
+        app:layout_constraintHorizontal_bias="0.243"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleM" />
 
@@ -47,26 +50,27 @@
         android:id="@+id/linkInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="15dp"
         android:autofillHints="No links provided"
         android:ems="10"
         android:hint="@string/enter_link_to_the_meeting"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/titleInput"
-        app:layout_constraintTop_toBottomOf="@+id/titleInput" />
+        app:layout_constraintStart_toStartOf="@+id/dateInputM"
+        app:layout_constraintTop_toBottomOf="@+id/titleInput"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/dateM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="46dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginTop="52dp"
         android:text="@string/date"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/dateInputM"
-        app:layout_constraintEnd_toEndOf="@+id/link"
+        app:layout_constraintEnd_toStartOf="@+id/dateInputM"
+        app:layout_constraintHorizontal_bias="0.248"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/link" />
 
@@ -74,7 +78,9 @@
         android:id="@+id/dateInputM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="15dp"
+        android:autofillHints="To add date"
         android:clickable="false"
         android:cursorVisible="false"
         android:ems="10"
@@ -84,20 +90,19 @@
         android:inputType="date"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/linkInput"
+        app:layout_constraintStart_toStartOf="@+id/timeInputM"
         app:layout_constraintTop_toBottomOf="@+id/linkInput"
-        android:autofillHints="To add date" />
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/timeM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="46dp"
-        android:layout_marginStart="20dp"
-        android:textSize="20sp"
+        android:layout_marginTop="52dp"
         android:text="@string/time"
-        app:layout_constraintBottom_toBottomOf="@+id/timeInputM"
-        app:layout_constraintEnd_toEndOf="@+id/dateM"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/timeInputM"
+        app:layout_constraintHorizontal_bias="0.252"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateM" />
 
@@ -105,7 +110,9 @@
         android:id="@+id/timeInputM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="15dp"
+        android:autofillHints="To add time input"
         android:clickable="false"
         android:cursorVisible="false"
         android:ems="10"
@@ -115,8 +122,6 @@
         android:inputType="time"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/dateInputM"
-        app:layout_constraintTop_toBottomOf="@+id/dateInputM"
-        android:autofillHints="To add time input" />
+        app:layout_constraintTop_toBottomOf="@+id/dateInputM" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
