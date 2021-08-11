@@ -140,7 +140,6 @@ class MessageActivity : AppCompatActivity() {
                 && timeInput.isNotEmpty()){
                 viewModel.updateTaskByMessage("", nameInput, "",
                     messageInput, dateInput, timeInput, namei)
-                Toast.makeText(this , "Updated Successfully", Toast.LENGTH_SHORT).show()
                 finish()
             }
               else
