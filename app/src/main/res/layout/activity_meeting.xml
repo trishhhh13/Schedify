@@ -42,8 +42,6 @@
         android:hint="@string/link"
         app:endIconMode="clear_text"
         app:helperText="Required*"
-        app:counterEnabled="true"
-        app:counterMaxLength="10"
         app:helperTextTextColor="#EE4B2B"
         app:startIconDrawable="@drawable/ic_baseline_insert_link_24"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +50,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/linkInput"
-            android:maxLength="10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>

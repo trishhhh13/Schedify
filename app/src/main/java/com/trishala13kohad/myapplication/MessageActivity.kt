@@ -17,6 +17,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var viewModel: TaskViewModel
     private lateinit var dateInput: EditText
     private lateinit var timeInput: EditText
+    private lateinit var nameInput: TextInputEditText
     private var namei :String? = null
     private var edit = false
     private var cal: Calendar = Calendar.getInstance()
@@ -34,8 +35,8 @@ class MessageActivity : AppCompatActivity() {
 
         if ( messagei != null && datei != null) {
             edit = true
-            val name: TextInputEditText = findViewById(R.id.nameInputET)
-            name.setText(namei)
+            nameInput = findViewById(R.id.nameInputET)
+            nameInput.setText(namei)
             val message: TextInputEditText = findViewById(R.id.messageInput)
             message.setText(messagei)
             dateInput = findViewById(R.id.dateInput)
@@ -48,6 +49,7 @@ class MessageActivity : AppCompatActivity() {
         get(TaskViewModel::class.java)
         dateInput = findViewById(R.id.dateInput)
         timeInput = findViewById(R.id.timeInput)
+
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
