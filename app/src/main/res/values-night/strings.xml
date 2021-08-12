@@ -17,4 +17,5 @@
     <string name="done">Done</string>
     <string name="mm_dd_yyyy">MM/DD/YYYY</string>
     <string name="_00_00">00:00 AM</string>
+    <string name="name">Name</string>
 </resources>
