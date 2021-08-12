@@ -130,7 +130,7 @@ class MeetingActivity : AppCompatActivity() {
                 else
                     Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
             }
-                else if( edit) {
+                else if(id == R.id.action_favorite && edit) {
                      val titleIn = title.text.toString()
                     val linkIn = link.text.toString()
                     val dateIn = dateInput.text.toString()

@@ -15,10 +15,8 @@
         android:layout_marginEnd="28dp"
         android:hint="@string/name"
         app:endIconMode="clear_text"
-        app:helperText="Required*"
         app:counterEnabled="true"
         app:counterMaxLength="10"
-        app:helperTextTextColor="#EE4B2B"
         app:startIconDrawable="@drawable/person"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +25,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameInputET"
             android:maxLength="10"
+            android:inputType="textCapSentences"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -38,8 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         app:endIconMode="clear_text"
-        app:helperText="Required*"
-        app:helperTextTextColor="#EE4B2B"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
         android:hint="@string/message"
@@ -50,6 +47,8 @@
         app:layout_constraintTop_toBottomOf="@+id/nameInput">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/messageInput"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxHeight="120dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -62,8 +61,6 @@
         android:layout_height="wrap_content"
         android:hint="@string/mm_dd_yyyy"
         android:layout_marginTop="28dp"
-        app:helperText="Required*"
-        app:helperTextTextColor="#EE4B2B"
         app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
@@ -73,6 +70,10 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/dateInput"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -84,8 +85,6 @@
         android:layout_height="wrap_content"
         android:hint="@string/_00_00"
         android:layout_marginTop="28dp"
-        app:helperText="Required*"
-        app:helperTextTextColor="#EE4B2B"
         app:startIconDrawable="@drawable/ic_baseline_access_time_24"
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
@@ -95,6 +94,10 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/timeInput"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>

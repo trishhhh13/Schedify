@@ -1,12 +1,16 @@
 package com.trishala13kohad.myapplication
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
@@ -34,7 +38,6 @@ class MessageActivity : AppCompatActivity() {
         val timei = intent.getStringExtra("time")
 
         if ( messagei != null && datei != null) {
-            edit = true
             nameInput = findViewById(R.id.nameInputET)
             nameInput.setText(namei)
             val message: TextInputEditText = findViewById(R.id.messageInput)
@@ -49,7 +52,42 @@ class MessageActivity : AppCompatActivity() {
         get(TaskViewModel::class.java)
         dateInput = findViewById(R.id.dateInput)
         timeInput = findViewById(R.id.timeInput)
+        nameInput = findViewById(R.id.nameInputET)
 
+
+
+//        nameInput.setOnClickListener {
+//            val thread1 = Thread  {
+//                val i = Intent(Intent.ACTION_PICK)
+//                i.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
+//                val inthread = Thread {
+//                    val resultLauncher =
+//                        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+//                        { result ->
+//                            if (result.resultCode == Activity.RESULT_OK) {
+//                                // There are no request codes
+//                                val data: Intent? = result.data
+//                                val contactUri = data?.data ?: return@registerForActivityResult
+//                                val cols = arrayOf(
+//                                    ContactsContract.CommonDataKinds.Phone.NUMBER,
+//                                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+//                                )
+//                                val rs = contentResolver.query(
+//                                    contactUri, cols, null, null,
+//                                    null
+//                                )
+//                                if (rs?.moveToFirst()!!) {
+//                                    nameInput.setText(rs.getString(1))
+//                                }
+//                                rs.close()
+//                            }
+//                        }
+//                    resultLauncher.launch(intent)
+//                }
+//                inthread.start()
+//            }
+//            thread1.start()
+//        }
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -109,6 +147,7 @@ class MessageActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+        if(namei != null) { edit = true }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_favorite && !edit) {
@@ -131,7 +170,7 @@ class MessageActivity : AppCompatActivity() {
                 Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
             return true
         }
-        else if(edit){
+        else if(id == R.id.action_favorite && edit){
             val name: TextInputEditText = findViewById(R.id.nameInputET)
             val nameInput = name.text.toString()
             val message: TextInputEditText = findViewById(R.id.messageInput)
@@ -140,7 +179,7 @@ class MessageActivity : AppCompatActivity() {
             val dateInput = date.text.toString()
             val time: EditText = findViewById(R.id.timeInput)
             val timeInput = time.text.toString()
-            if( messageInput.isNotEmpty() && dateInput.isNotEmpty()
+            if(nameInput.isNotEmpty() && messageInput.isNotEmpty() && dateInput.isNotEmpty()
                 && timeInput.isNotEmpty()){
                 viewModel.updateTaskByMessage("",  nameInput,"",
                     messageInput, dateInput, timeInput, namei)
