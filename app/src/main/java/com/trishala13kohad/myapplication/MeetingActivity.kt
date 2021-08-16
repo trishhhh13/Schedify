@@ -1,13 +1,17 @@
 package com.trishala13kohad.myapplication
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.RemoteViews
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import java.text.SimpleDateFormat
 import java.util.*
@@ -19,8 +23,10 @@ class MeetingActivity : AppCompatActivity() {
     private lateinit var timeInput: EditText
     private lateinit var title: EditText
     private lateinit var link: EditText
+    private var channelID = "Your_Channel_ID"
     private var titlei :String? = null
-    var edit = false
+    private var edit = false
+    private lateinit var builder: NotificationCompat.Builder
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
 
@@ -82,6 +88,29 @@ class MeetingActivity : AppCompatActivity() {
                 ).show()
             }
 
+        createNotificationChannel()
+        val notificationLayout = RemoteViews(packageName, R.layout.activity_notification)
+         builder = NotificationCompat.Builder(this, channelID)
+            .setContentTitle("TItle").setSmallIcon(R.drawable.notification_icon)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(notificationLayout)
+             .setDefaults(Notification.DEFAULT_ALL)
+             .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+    }
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+
+            val name = "App notification"
+            val descriptionText = "This is test notification"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(channelID, name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+
     }
     private fun updateDateInView() {
         val myFormat = "MM/dd/yyyy" // mention the format you need
@@ -127,9 +156,14 @@ class MeetingActivity : AppCompatActivity() {
                     )
                     finish()
                 }
-                else
+                else {
                     Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
+//                with(NotificationManagerCompat.from(this)){
+//                    notify(0,builder.build())
+//                }
+                }
             }
+
                 else if(id == R.id.action_favorite && edit) {
                      val titleIn = title.text.toString()
                     val linkIn = link.text.toString()

@@ -18,4 +18,6 @@
     <string name="mm_dd_yyyy">MM/DD/YYYY</string>
     <string name="_00_00">00:00 AM</string>
     <string name="name">Name</string>
+    <string name="welcome_to_geeksforgeeks">Welcome To GeeksforGeeks</string>
+    <string name="idhar_rahega_messgae">idhaR rahega messgae</string>
 </resources>

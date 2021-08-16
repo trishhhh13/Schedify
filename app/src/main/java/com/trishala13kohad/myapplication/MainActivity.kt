@@ -9,20 +9,36 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity(), TaskInterface {
 
     private lateinit var viewModel: TaskViewModel
     private lateinit var recyclerView: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        val rootView: View = findViewById(R.id.rootView)
         recyclerView = (findViewById(R.id.recyclerView))
+        val fab = findViewById<FloatingActionButton>(R.id.addButton)
         recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = TaskAdapter(this, this)
         recyclerView.adapter = adapter
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val height = recyclerView.height
+                if (dy > 0|| height>rootView.height) {
+                    fab.hide()
+                    return
+                }
+                if (dy < 0 || height<=rootView.height) {
+                    fab.show()
+                }
+            }
+        })
 
         viewModel = ViewModelProvider(this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)).
@@ -54,13 +70,22 @@ class MainActivity : AppCompatActivity(), TaskInterface {
                 taskAdapter.openMessage(checkByMessage)
 
         }
-//        taskAdapter.openMessage(checkByMessage)
         thread.start()
-//        val openMeeting = Intent(this, MeetingActivity::class.java)
     }
 
     override fun onItemClicked(task: Task) {
         viewModel.deleteTask(task)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val height = recyclerView.height
+        val rootView = findViewById<View>(R.id.rootView)
+        val fab = findViewById<FloatingActionButton>(R.id.addButton)
+        if (height>rootView.height) {
+            fab.hide()
+            return
+        }
+        if (height<=rootView.height) {
+            fab.show()
+        }
         Toast.makeText(this, "Deleted the task", Toast.LENGTH_SHORT).show()
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.Menu
@@ -11,11 +12,17 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class MessageActivity : AppCompatActivity() {
     private lateinit var viewModel: TaskViewModel
@@ -27,9 +34,31 @@ class MessageActivity : AppCompatActivity() {
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
 
+    @DelicateCoroutinesApi
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
+        val resultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    // There are no request codes
+                    val data: Intent? = result.data
+                    val contactUri = data?.data ?: return@registerForActivityResult
+                    val cols = arrayOf(
+                        ContactsContract.CommonDataKinds.Phone.NUMBER,
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+                    )
+
+                    val rs = contentResolver.query(contactUri, cols, null, null, null)
+                    if (rs?.moveToFirst()!!) {
+//                            GlobalScope.launch(Dispatchers.Main) {
+                        nameInput.setText(rs.getString(1))
+
+                    }
+                    rs.close()
+                }
+            }
 
         val intent = intent
         namei = intent.getStringExtra("name")
@@ -53,41 +82,14 @@ class MessageActivity : AppCompatActivity() {
         dateInput = findViewById(R.id.dateInput)
         timeInput = findViewById(R.id.timeInput)
         nameInput = findViewById(R.id.nameInputET)
+        nameInput.setOnClickListener{
+            val i = Intent(Intent.ACTION_PICK)
+            i.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
+            GlobalScope.launch(Dispatchers.IO) {
 
-
-
-//        nameInput.setOnClickListener {
-//            val thread1 = Thread  {
-//                val i = Intent(Intent.ACTION_PICK)
-//                i.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
-//                val inthread = Thread {
-//                    val resultLauncher =
-//                        registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-//                        { result ->
-//                            if (result.resultCode == Activity.RESULT_OK) {
-//                                // There are no request codes
-//                                val data: Intent? = result.data
-//                                val contactUri = data?.data ?: return@registerForActivityResult
-//                                val cols = arrayOf(
-//                                    ContactsContract.CommonDataKinds.Phone.NUMBER,
-//                                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-//                                )
-//                                val rs = contentResolver.query(
-//                                    contactUri, cols, null, null,
-//                                    null
-//                                )
-//                                if (rs?.moveToFirst()!!) {
-//                                    nameInput.setText(rs.getString(1))
-//                                }
-//                                rs.close()
-//                            }
-//                        }
-//                    resultLauncher.launch(intent)
-//                }
-//                inthread.start()
-//            }
-//            thread1.start()
-//        }
+                resultLauncher.launch(i)
+            }
+        }
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -123,6 +125,9 @@ class MessageActivity : AppCompatActivity() {
 
         }
     }
+
+
+
     private fun updateDateInView() {
         val myFormat = "MM/dd/yyyy" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
