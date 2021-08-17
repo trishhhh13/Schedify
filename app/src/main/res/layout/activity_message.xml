@@ -15,8 +15,6 @@
         android:layout_marginEnd="28dp"
         android:hint="@string/name"
         app:endIconMode="clear_text"
-        app:counterEnabled="true"
-        app:counterMaxLength="10"
         app:startIconDrawable="@drawable/person"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

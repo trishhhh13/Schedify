@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -14,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -83,11 +85,16 @@ class MessageActivity : AppCompatActivity() {
         timeInput = findViewById(R.id.timeInput)
         nameInput = findViewById(R.id.nameInputET)
         nameInput.setOnClickListener{
-            val i = Intent(Intent.ACTION_PICK)
-            i.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
-            GlobalScope.launch(Dispatchers.IO) {
+            if(!hasPermission()){
+                requestPermission()
+            }
+            else {
+                val i = Intent(Intent.ACTION_PICK)
+                i.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
+                GlobalScope.launch(Dispatchers.IO) {
 
-                resultLauncher.launch(i)
+                    resultLauncher.launch(i)
+                }
             }
         }
         val dateSetListener =
@@ -142,6 +149,20 @@ class MessageActivity : AppCompatActivity() {
         else
         {
             Toast.makeText(this, "Invalid time", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun hasPermission(): Boolean{
+        return ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+
+    }
+    private fun requestPermission(){
+        val permission = mutableListOf<String>()
+        if(!hasPermission()){
+            permission.add(android.Manifest.permission.READ_CONTACTS)
+        }
+        if(permission.isNotEmpty()){
+            ActivityCompat.requestPermissions(this, permission.toTypedArray(), 0)
         }
     }
 
