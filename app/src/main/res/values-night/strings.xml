@@ -13,4 +13,5 @@
     <string name="name">Name</string>
     <string name="welcome_to_geeksforgeeks">Welcome To GeeksforGeeks</string>
     <string name="idhar_rahega_messgae">idhaR rahega messgae</string>
+    <string name="go_to_other_activity">Go to other activity</string>
 </resources>

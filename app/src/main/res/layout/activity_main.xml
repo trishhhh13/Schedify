@@ -43,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:background="@color/design_default_color_primary_dark"
-        android:contentDescription="@string/go_to_the_other_activity"
+        android:contentDescription="@string/go_to_other_activity"
         tools:ignore="UsingOnClickInXml" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
