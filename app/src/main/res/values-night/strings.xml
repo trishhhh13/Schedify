@@ -2,13 +2,11 @@
 <resources>
     <string name="submit">Submit</string>
     <string name="textview">TextView</string>
-    <string name="link">Link:</string>
-    <string name="date">Date:</string>
-    <string name="time">Time:</string>
-    <string name="message">Message:</string>
-    <string name="enter_the_message">Enter the message</string>
-    <string name="title">Title: </string>
-    <string name="enter_the_title">Enter the title</string>
+    <string name="link">Link</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="message">Message</string>
+    <string name="title">Title</string>
     <string name="done">Done</string>
     <string name="name">Name</string>
     <string name="welcome_to_geeksforgeeks">Welcome To GeeksforGeeks</string>
