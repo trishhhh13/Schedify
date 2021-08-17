@@ -136,9 +136,15 @@ class MessageActivity : AppCompatActivity() {
 
 
     private fun updateDateInView() {
-        val myFormat = "MM/dd/yyyy" // mention the format you need
-        val sdf = SimpleDateFormat(myFormat, Locale.US)
-        dateInput.setText(sdf.format(cal.time))
+        if(cal.timeInMillis >= cali.timeInMillis) {
+            val myFormat = "MM/dd/yyyy" // mention the format you need
+            val sdf = SimpleDateFormat(myFormat, Locale.US)
+            dateInput.setText(sdf.format(cal.time))
+        }
+        else
+        {
+            Toast.makeText(this, "Invalid time", Toast.LENGTH_SHORT).show()
+        }
     }
     private fun updateTimeInView() {
         if(cal.timeInMillis >= cali.timeInMillis) {

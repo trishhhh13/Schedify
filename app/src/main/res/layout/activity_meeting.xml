@@ -16,8 +16,6 @@
         android:hint="@string/title"
         app:endIconMode="clear_text"
         app:startIconDrawable="@drawable/ic_baseline_title_24"
-        app:counterEnabled="true"
-        app:counterMaxLength="10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
