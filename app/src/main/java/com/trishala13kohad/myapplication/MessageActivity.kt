@@ -1,5 +1,6 @@
 package com.trishala13kohad.myapplication
 
+import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -33,11 +34,12 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var nameInput: TextInputEditText
     private var namei :String? = null
     private var edit = false
+    private var check = false
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
 
     @DelicateCoroutinesApi
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
@@ -54,7 +56,6 @@ class MessageActivity : AppCompatActivity() {
 
                     val rs = contentResolver.query(contactUri, cols, null, null, null)
                     if (rs?.moveToFirst()!!) {
-//                            GlobalScope.launch(Dispatchers.Main) {
                         nameInput.setText(rs.getString(1))
 
                     }
@@ -68,7 +69,7 @@ class MessageActivity : AppCompatActivity() {
         val datei = intent.getStringExtra("date")
         val timei = intent.getStringExtra("time")
 
-        if ( messagei != null && datei != null) {
+        if (namei != null && messagei != null && datei != null && timei != null) {
             nameInput = findViewById(R.id.nameInputET)
             nameInput.setText(namei)
             val message: TextInputEditText = findViewById(R.id.messageInput)
@@ -92,7 +93,6 @@ class MessageActivity : AppCompatActivity() {
                 val i = Intent(Intent.ACTION_PICK)
                 i.type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
                 GlobalScope.launch(Dispatchers.IO) {
-
                     resultLauncher.launch(i)
                 }
             }
@@ -110,30 +110,21 @@ class MessageActivity : AppCompatActivity() {
             updateTimeInView()
         }
         dateInput.setOnClickListener {
-            val bro = DatePickerDialog(
-                this,
+            val bro = DatePickerDialog(this,
                 dateSetListener,
-                // set DatePickerDialog to point to today's date when it loads up
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-            )
+                cal.get(Calendar.DAY_OF_MONTH))
 
             bro.datePicker.minDate = cali.timeInMillis
             bro.show()
-
-
         }
         timeInput.setOnClickListener {
-
             TimePickerDialog(this,timeSetListener,
                 cal.get(Calendar.HOUR_OF_DAY),
                 cal.get(Calendar.MINUTE), false).show()
-
         }
     }
-
-
 
     private fun updateDateInView() {
         if(cal.timeInMillis >= cali.timeInMillis) {
@@ -159,17 +150,31 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun hasPermission(): Boolean{
-        return ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
 
     }
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun requestPermission(){
         val permission = mutableListOf<String>()
-        if(!hasPermission()){
-            permission.add(android.Manifest.permission.READ_CONTACTS)
+        if(!shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)){
+            Toast.makeText(this, "Contact permission is required to send message.",Toast.LENGTH_SHORT).show()
         }
-        if(permission.isNotEmpty()){
+        if (!hasPermission()) {
+            permission.add(Manifest.permission.READ_CONTACTS)
+        }
+        if (permission.isNotEmpty()) {
             ActivityCompat.requestPermissions(this, permission.toTypedArray(), 0)
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray) {
+        for(permission in permissions){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                check = true
+            }
+        }
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -192,7 +197,7 @@ class MessageActivity : AppCompatActivity() {
             val dateInput = date.text.toString()
             val time: EditText = findViewById(R.id.timeInput)
             val timeInput = time.text.toString()
-            if(messageInput.isNotEmpty() && dateInput.isNotEmpty()
+            if(nameInput.isNotEmpty() && messageInput.isNotEmpty() && dateInput.isNotEmpty()
                 && timeInput.isNotEmpty()){
                 viewModel.insertTask(Task("", nameInput,"",
                     messageInput, dateInput, timeInput))

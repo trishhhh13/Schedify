@@ -22,7 +22,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameInputET"
-            android:maxLength="10"
             android:clickable="false"
             android:cursorVisible="false"
             android:focusable="false"
