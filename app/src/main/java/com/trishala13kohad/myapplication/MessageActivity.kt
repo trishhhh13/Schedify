@@ -33,6 +33,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var timeInput: EditText
     private lateinit var nameInput: TextInputEditText
     private var namei :String? = null
+    private var messagei :String? = null
     private var edit = false
     private var check = false
     private var cal: Calendar = Calendar.getInstance()
@@ -65,7 +66,7 @@ class MessageActivity : AppCompatActivity() {
 
         val intent = intent
         namei = intent.getStringExtra("name")
-        val messagei = intent.getStringExtra("message")
+        messagei = intent.getStringExtra("message")
         val datei = intent.getStringExtra("date")
         val timei = intent.getStringExtra("time")
 
@@ -182,6 +183,7 @@ class MessageActivity : AppCompatActivity() {
         return true
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(namei != null) { edit = true }
@@ -201,6 +203,8 @@ class MessageActivity : AppCompatActivity() {
                 && timeInput.isNotEmpty()){
                 viewModel.insertTask(Task("", nameInput,"",
                     messageInput, dateInput, timeInput))
+                NotificationReceiver().scheduleNotification(this, cal.timeInMillis,
+                    "Message sent to $nameInput", messageInput)
                 finish()
             }
             else
@@ -220,6 +224,9 @@ class MessageActivity : AppCompatActivity() {
                 && timeInput.isNotEmpty()){
                 viewModel.updateTaskByMessage("",  nameInput,"",
                     messageInput, dateInput, timeInput, namei)
+                NotificationReceiver().cancelNotification(this,  namei, messagei)
+                NotificationReceiver().scheduleNotification(this,
+                    cal.timeInMillis , "Message sent to $nameInput", messageInput)
                 finish()
             }
               else
