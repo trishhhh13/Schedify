@@ -34,7 +34,13 @@
         </activity>
         <receiver
             android:name=".NotificationReceiver"
-            android:enabled="true" />
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

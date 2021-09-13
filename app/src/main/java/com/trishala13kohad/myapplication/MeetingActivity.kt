@@ -1,6 +1,8 @@
 package com.trishala13kohad.myapplication
 
 import android.app.*
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -10,6 +12,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -81,6 +84,9 @@ class MeetingActivity : AppCompatActivity() {
                 cal.get(Calendar.MINUTE), false
             ).show()
         }
+        val broadCastReceiver = NotificationReceiver()
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(broadCastReceiver, IntentFilter(NOTIFICATION_SERVICE))
     }
 
     private fun updateDateInView() {
