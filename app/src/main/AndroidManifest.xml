@@ -34,7 +34,8 @@
         </activity>
         <receiver
             android:name=".NotificationReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
 
