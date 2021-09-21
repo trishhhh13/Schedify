@@ -24,6 +24,8 @@ class MeetingActivity : AppCompatActivity() {
     private var urli: String? = null
     private lateinit var link: EditText
     private var titlei: String? = null
+    private var datei: String? = null
+    private var timei: String? = null
     private var eventI by Delegates.notNull<Int>()
     private var edit = false
     private var cal: Calendar = Calendar.getInstance()
@@ -36,8 +38,8 @@ class MeetingActivity : AppCompatActivity() {
         val intent = intent
         titlei = intent.getStringExtra("title")
         urli = intent.getStringExtra("url")
-        val datei = intent.getStringExtra("date")
-        val timei = intent.getStringExtra("time")
+        datei = intent.getStringExtra("date")
+        timei = intent.getStringExtra("time")
         eventI= intent.getIntExtra("eventId", 0)
         if (titlei != null && urli != null && datei != null) {
             edit = true
@@ -149,11 +151,17 @@ class MeetingActivity : AppCompatActivity() {
                 viewModel.updateTaskByTitle(
                     titleIn, "", linkIn, "",
                     dateIn, timeIn, titlei, eventId)
-                NotificationReceiver().cancelNotification(this,  titlei, urli,
-                    eventI)
-//                NotificationReceiver().scheduleNotification(this,
-//                    cal.timeInMillis - 300000, "$titleIn - in 5 minutes", linkIn,
-//                    eventId)
+                if(timeIn != timei && dateIn != datei) {
+                    NotificationReceiver().cancelNotification(
+                        this, titlei, urli,
+                        eventI
+                    )
+                    NotificationReceiver().scheduleNotification(
+                        this,
+                        cal.timeInMillis - 300000, "$titleIn - in 5 minutes", linkIn,
+                        eventId
+                    )
+                }
                 finish()
             } else
                 Toast.makeText(this, "Fill the details", Toast.LENGTH_SHORT).show()

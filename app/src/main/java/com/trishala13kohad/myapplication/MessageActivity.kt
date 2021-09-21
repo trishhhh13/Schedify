@@ -35,6 +35,8 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var nameInput: TextInputEditText
     private var namei :String? = null
     private var messagei :String? = null
+    private var timei :String? = null
+    private var datei :String? = null
     private var eventI by Delegates.notNull<Int>()
     private var edit = false
     private var check = false
@@ -57,7 +59,8 @@ class MessageActivity : AppCompatActivity() {
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
                     )
 
-                    val rs = contentResolver.query(contactUri, cols, null, null, null)
+                    val rs = contentResolver.query(contactUri, cols, null,
+                        null, null)
                     if (rs?.moveToFirst()!!) {
                         nameInput.setText(rs.getString(1))
 
@@ -70,8 +73,8 @@ class MessageActivity : AppCompatActivity() {
         eventI= intent.getIntExtra("eventId", 0)
         namei = intent.getStringExtra("name")
         messagei = intent.getStringExtra("message")
-        val datei = intent.getStringExtra("date")
-        val timei = intent.getStringExtra("time")
+        datei = intent.getStringExtra("date")
+        timei = intent.getStringExtra("time")
 
         if (namei != null && messagei != null && datei != null && timei != null) {
             nameInput = findViewById(R.id.nameInputET)
@@ -233,15 +236,18 @@ class MessageActivity : AppCompatActivity() {
                 && timeInput.isNotEmpty()){
                 viewModel.updateTaskByMessage("",  nameInput,"",
                     messageInput, dateInput, timeInput, namei, eventId)
-                NotificationReceiver().cancelNotification(this,  namei, messagei,
-                    eventI)
-                NotificationReceiver()
-                .scheduleNotification(this,
-                    cal.timeInMillis , "Message sent to $nameInput", messageInput, eventId)
+                if(timeInput != timei && dateInput != datei) {
+                    NotificationReceiver().cancelNotification(this, namei, messagei, eventI)
+                    NotificationReceiver().scheduleNotification(
+                        this,
+                        cal.timeInMillis, "Message sent to $nameInput", messageInput, eventId
+                    )
+                }
                 finish()
             }
               else
-                Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Insert all the details",
+                    Toast.LENGTH_SHORT).show()
             return true
         }
         return super.onOptionsItemSelected(item)
