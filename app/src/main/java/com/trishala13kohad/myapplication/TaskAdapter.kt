@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 
 class TaskAdapter(private val context: Context, private val listener: TaskInterface): RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
@@ -56,6 +55,7 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         trying.putExtra("url", task[0].url)
         trying.putExtra("date", task[0].date)
         trying.putExtra("time", task[0].time)
+        trying.putExtra("eventId", task[0].eventId)
         startActivity(context, trying, null)
 
         notifyDataSetChanged()
@@ -67,6 +67,7 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         trying.putExtra("message", task[0].message)
         trying.putExtra("date", task[0].date)
         trying.putExtra("time", task[0].time)
+        trying.putExtra("eventId", task[0].eventId)
         startActivity(context, trying, null)
 
         notifyDataSetChanged()

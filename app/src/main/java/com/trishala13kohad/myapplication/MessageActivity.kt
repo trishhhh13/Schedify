@@ -25,6 +25,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class MessageActivity : AppCompatActivity() {
@@ -34,6 +35,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var nameInput: TextInputEditText
     private var namei :String? = null
     private var messagei :String? = null
+    private var eventI by Delegates.notNull<Int>()
     private var edit = false
     private var check = false
     private var cal: Calendar = Calendar.getInstance()
@@ -65,6 +67,7 @@ class MessageActivity : AppCompatActivity() {
             }
 
         val intent = intent
+        eventI= intent.getIntExtra("eventId", 0)
         namei = intent.getStringExtra("name")
         messagei = intent.getStringExtra("message")
         val datei = intent.getStringExtra("date")
@@ -151,14 +154,18 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun hasPermission(): Boolean{
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+        return ActivityCompat
+            .checkSelfPermission(
+                this, Manifest.permission.READ_CONTACTS
+            ) == PackageManager.PERMISSION_GRANTED
 
     }
     @RequiresApi(Build.VERSION_CODES.M)
     private fun requestPermission(){
         val permission = mutableListOf<String>()
         if(!shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)){
-            Toast.makeText(this, "Contact permission is required to send message.",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Contact permission is required to send message."
+                ,Toast.LENGTH_SHORT).show()
         }
         if (!hasPermission()) {
             permission.add(Manifest.permission.READ_CONTACTS)
@@ -187,6 +194,7 @@ class MessageActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if(namei != null) { edit = true }
+        val eventId = Calendar.getInstance().timeInMillis.toInt()%10000
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_favorite && !edit) {
@@ -202,9 +210,10 @@ class MessageActivity : AppCompatActivity() {
             if(nameInput.isNotEmpty() && messageInput.isNotEmpty() && dateInput.isNotEmpty()
                 && timeInput.isNotEmpty()){
                 viewModel.insertTask(Task("", nameInput,"",
-                    messageInput, dateInput, timeInput))
+                    messageInput, dateInput, timeInput,eventId))
                 NotificationReceiver().scheduleNotification(this, cal.timeInMillis,
-                    "Message sent to $nameInput", messageInput)
+                    "Message sent to $nameInput", messageInput,
+                    eventId)
                 finish()
             }
             else
@@ -223,10 +232,12 @@ class MessageActivity : AppCompatActivity() {
             if(nameInput.isNotEmpty() && messageInput.isNotEmpty() && dateInput.isNotEmpty()
                 && timeInput.isNotEmpty()){
                 viewModel.updateTaskByMessage("",  nameInput,"",
-                    messageInput, dateInput, timeInput, namei)
-                NotificationReceiver().cancelNotification(this,  namei, messagei)
-                NotificationReceiver().scheduleNotification(this,
-                    cal.timeInMillis , "Message sent to $nameInput", messageInput)
+                    messageInput, dateInput, timeInput, namei, eventId)
+                NotificationReceiver().cancelNotification(this,  namei, messagei,
+                    eventI)
+                NotificationReceiver()
+                .scheduleNotification(this,
+                    cal.timeInMillis , "Message sent to $nameInput", messageInput, eventId)
                 finish()
             }
               else

@@ -49,101 +49,39 @@ class NotificationReceiver : BroadcastReceiver() {
                 .build() // required
 
         }
-        // Build notification based on Intent
-
-        val notification: Notification = NotificationCompat
-            .Builder(context, channelId)
-            .setSmallIcon(R.drawable.notification_icon)
-            .setContentTitle(intent.getStringExtra("title"))
-            .setContentText(intent.getStringExtra("text"))
-            .setDefaults(NotificationCompat.DEFAULT_SOUND)
-            .build()
         // Show notification
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
-        manager.notify(Calendar.getInstance().timeInMillis.toInt(), notification)
+        manager.notify((Calendar.getInstance().timeInMillis%10000).toInt(), builder.build())
 
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scheduleNotification(context: Context, time: Long, title: String?, text: String?) {
+    fun scheduleNotification(context: Context, time: Long, title: String?,
+                             text: String?, eventId: Int) {
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.putExtra("title", title)
         intent.putExtra("text", text)
         val pending =
             PendingIntent.getBroadcast(context,
-                Calendar.getInstance().timeInMillis.toInt(), intent,
+                eventId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT)
         // Schedule notification
         val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pending)
     }
     @SuppressLint("UnspecifiedImmutableFlag")
-    fun cancelNotification(context: Context, title: String?, text: String?) {
+    fun cancelNotification(context: Context, title: String?, text: String?, eventId: Int) {
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.putExtra("title", title)
         intent.putExtra("text", text)
+        intent.putExtra("eventId", eventId)
         val pending =
-            PendingIntent.getBroadcast(context, Calendar.getInstance().
-            timeInMillis.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.getBroadcast(context, eventId,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT)
         // Cancel notification
         val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.cancel(pending)
     }
-//    fun createNotification(title: String?, body: String?) {
-//        val NOTIFY_ID = 1002
-//
-//        // There are hardcoding only for show it's just strings
-//        val name = "my_package_channel"
-//        val id = "my_package_channel_1" // The user-visible name of the channel.
-//        val description = "my_package_first_channel" // The user-visible description of the channel.
-//        val intent: Intent
-//        val pendingIntent: PendingIntent
-//        val builder: NotificationCompat.Builder
-//        var notifManager: NotificationManager? = null
-//        if (notifManager == null) {
-//            notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-//        }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val importance = NotificationManager.IMPORTANCE_HIGH
-//            var mChannel: NotificationChannel = notifManager.getNotificationChannel(id)
-//            if (mChannel == null) {
-//                mChannel = NotificationChannel(id, name, importance)
-//                mChannel.description = description
-//                mChannel.enableVibration(true)
-//                mChannel.lightColor = Color.GREEN
-//                mChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-//                notifManager.createNotificationChannel(mChannel)
-//            }
-//            builder = NotificationCompat.Builder(this, id)
-//            intent = Intent(this, MainActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-//            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-//            builder.setContentTitle(title) // required
-//                .setSmallIcon(android.R.drawable.ic_popup_reminder) // required
-//                .setContentText(body) // required
-//                .setDefaults(Notification.DEFAULT_ALL)
-//                .setAutoCancel(true)
-//                .setContentIntent(pendingIntent)
-//                .setTicker(title)
-//                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
-//        } else {
-//            builder = NotificationCompat.Builder(this)
-//            intent = Intent(this, MainActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-//            pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-//            builder.setContentTitle(title) // required
-//                .setSmallIcon(android.R.drawable.ic_popup_reminder) // required
-//                .setContentText(body) // required
-//                .setDefaults(Notification.DEFAULT_ALL)
-//                .setAutoCancel(true)
-//                .setContentIntent(pendingIntent)
-//                .setTicker(title)
-//                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)).priority =
-//                Notification.PRIORITY_HIGH
-//        }
-//        val notification = builder.build()
-//        notifManager.notify(NOTIFY_ID, notification)
-//    }
 }

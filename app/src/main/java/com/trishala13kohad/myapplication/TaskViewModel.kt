@@ -35,15 +35,15 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
         }
     }
     fun updateTaskByTitle(title: String, name: String, url: String, message:
-    String, date: String, time: String, oldTitle: String?) {
+    String, date: String, time: String, oldTitle: String?, eventId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.taskTitleUpdate(title, name, url, message, date, time, oldTitle)
+            repository.taskTitleUpdate(title, name, url, message, date, time, oldTitle, eventId)
         }
     }
     fun updateTaskByMessage(title: String, name: String, url: String, message:
-    String, date: String, time: String, oldName: String?) {
+    String, date: String, time: String, oldName: String?, eventId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.taskMessageUpdate(title, name, url, message, date, time, oldName)
+            repository.taskMessageUpdate(title, name, url, message, date, time, oldName, eventId)
         }
     }
 

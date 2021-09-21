@@ -29,9 +29,10 @@ class TaskRepository(private val taskDao: TaskDao) {
         message: String,
         date: String,
         time: String,
-        oldTitle: String?
+        oldTitle: String?,
+        eventId:Int
     ) {
-        taskDao.taskUpdateByTitle(title, name, url, message, date, time, oldTitle)
+        taskDao.taskUpdateByTitle(title, name, url, message, date, time, oldTitle, eventId)
     }
 
     fun taskMessageUpdate(
@@ -41,9 +42,10 @@ class TaskRepository(private val taskDao: TaskDao) {
         message: String,
         date: String,
         time: String,
-        oldName: String?
+        oldName: String?,
+        eventId: Int
     ) {
-        taskDao.taskUpdateByName(title, name, url, message, date, time, oldName)
+        taskDao.taskUpdateByName(title, name, url, message, date, time, oldName, eventId)
     }
 
 }
