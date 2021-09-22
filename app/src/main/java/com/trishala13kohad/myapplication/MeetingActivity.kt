@@ -1,9 +1,12 @@
 package com.trishala13kohad.myapplication
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Patterns
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -15,6 +18,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
+import android.app.AlarmManager
+
+import android.app.PendingIntent
+
+import android.content.Intent
+
+
+
 
 class MeetingActivity : AppCompatActivity() {
     private lateinit var viewModel: TaskViewModel
@@ -113,6 +124,7 @@ class MeetingActivity : AppCompatActivity() {
         return true
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
@@ -131,12 +143,31 @@ class MeetingActivity : AppCompatActivity() {
             val timeInpu = timeInput.text.toString()
             if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInpu.isNotEmpty()
                 && timeInpu.isNotEmpty()) {
-                viewModel.insertTask(Task(titleInput, "", linkInput, "",
-                        dateInpu, timeInpu, eventId))
-                NotificationReceiver().scheduleNotification(this, cal.timeInMillis-
-                300000, "$titleInput - in 5 minutes", linkInput,
-                    eventId)
-                finish()
+                    if(linkInput.isValidUrl()) {
+                        viewModel.insertTask(
+                            Task(
+                                titleInput, "", linkInput, "",
+                                dateInpu, timeInpu, eventId
+                            )
+                        )
+                        NotificationReceiver().scheduleNotification(
+                            this, cal.timeInMillis -
+                                    400000, "$titleInput - in few minutes", linkInput,
+                            eventId
+                        )
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
+                        val pendingIntent = PendingIntent.getActivity(
+                                this,
+                            eventId, intent, PendingIntent.FLAG_ONE_SHOT
+                        )
+                        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                                cal.timeInMillis] = pendingIntent
+                        finish()
+                    }
+                else{
+                    Toast.makeText(this, "Provide a valid meeting link",
+                        Toast.LENGTH_SHORT).show()
+                    }
             }
             else {
                 Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
@@ -148,21 +179,36 @@ class MeetingActivity : AppCompatActivity() {
             val timeIn = timeInput.text.toString()
             if (titleIn.isNotEmpty() && linkIn.isNotEmpty() && dateIn.isNotEmpty()
                 && timeIn.isNotEmpty()) {
-                viewModel.updateTaskByTitle(
-                    titleIn, "", linkIn, "",
-                    dateIn, timeIn, titlei, eventId)
-                if(timeIn != timei && dateIn != datei) {
-                    NotificationReceiver().cancelNotification(
-                        this, titlei, urli,
-                        eventI
+                if(linkIn.isValidUrl()) {
+                    viewModel.updateTaskByTitle(
+                        titleIn, "", linkIn, "",
+                        dateIn, timeIn, titlei, eventId
                     )
-                    NotificationReceiver().scheduleNotification(
-                        this,
-                        cal.timeInMillis - 300000, "$titleIn - in 5 minutes", linkIn,
-                        eventId
-                    )
+                    if (timeIn != timei && dateIn != datei) {
+                        NotificationReceiver().cancelNotification(
+                            this, titlei, urli,
+                            eventI
+                        )
+                        NotificationReceiver().scheduleNotification(
+                            this,
+                            cal.timeInMillis - 400000, "$titleIn - in few minutes", linkIn,
+                            eventId
+                        )
+                        PendingIntent.getBroadcast(
+                            this, eventI, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                        ).cancel()
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkIn))
+                        val pendingIntent = PendingIntent.getActivity(
+                            this, eventId, intent, PendingIntent.FLAG_ONE_SHOT
+                        )
+                        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                                cal.timeInMillis] =
+                            pendingIntent
+
+                    }
+                    finish()
                 }
-                finish()
             } else
                 Toast.makeText(this, "Fill the details", Toast.LENGTH_SHORT).show()
             return true
@@ -170,6 +216,7 @@ class MeetingActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+    private fun String.isValidUrl(): Boolean = Patterns.WEB_URL.matcher(this).matches()
 
 }
 
