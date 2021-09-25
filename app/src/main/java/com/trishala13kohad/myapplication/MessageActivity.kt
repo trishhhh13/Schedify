@@ -1,14 +1,15 @@
 package com.trishala13kohad.myapplication
 
 import android.Manifest
-import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.Settings
+import android.text.TextUtils.SimpleStringSplitter
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -42,6 +43,7 @@ class MessageActivity : AppCompatActivity() {
     private var check = false
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
+    private lateinit var preferenceManager :PreferenceManager
 
     @DelicateCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.M)
@@ -63,18 +65,17 @@ class MessageActivity : AppCompatActivity() {
                         null, null)
                     if (rs?.moveToFirst()!!) {
                         nameInput.setText(rs.getString(1))
-
                     }
                     rs.close()
                 }
             }
-
         val intent = intent
         eventI= intent.getIntExtra("eventId", 0)
         namei = intent.getStringExtra("name")
         messagei = intent.getStringExtra("message")
         datei = intent.getStringExtra("date")
         timei = intent.getStringExtra("time")
+        preferenceManager = PreferenceManager(applicationContext)
 
         if (namei != null && messagei != null && datei != null && timei != null) {
             nameInput = findViewById(R.id.nameInputET)
@@ -214,9 +215,13 @@ class MessageActivity : AppCompatActivity() {
                 && timeInput.isNotEmpty()){
                 viewModel.insertTask(Task("", nameInput,"",
                     messageInput, dateInput, timeInput,eventId))
-                NotificationReceiver().scheduleNotification(this, cal.timeInMillis,
-                    "Message sent to $nameInput", messageInput,
-                    eventId)
+                if(!isAccessibilityOn(applicationContext)){
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    Thread.sleep(5000)
+                }
+                startWhatsapp(nameInput, messageInput, eventId)
                 finish()
             }
             else
@@ -236,14 +241,14 @@ class MessageActivity : AppCompatActivity() {
                 && timeInput.isNotEmpty()){
                 viewModel.updateTaskByMessage("",  nameInput,"",
                     messageInput, dateInput, timeInput, namei, eventId)
-                if(timeInput != timei && dateInput != datei) {
-                    NotificationReceiver().cancelNotification(this, namei, messagei, eventI)
-                    NotificationReceiver().scheduleNotification(
-                        this,
-                        cal.timeInMillis, "Message sent to $nameInput", messageInput, eventId
-                    )
+                if(!isAccessibilityOn(applicationContext)){
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    Thread.sleep(5000)
                 }
-                finish()
+                startWhatsapp(nameInput, messageInput, eventId)
+
             }
               else
                 Toast.makeText(this, "Insert all the details",
@@ -251,5 +256,39 @@ class MessageActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun startWhatsapp(name: String, message: String, eventId: Int) {
+        val share = Intent(Intent.ACTION_SEND)
+        preferenceManager.setISON(true)
+        share.type = "text/plain"
+        share.setPackage("com.whatsapp")
+        share.putExtra(Intent.EXTRA_TEXT, message)
+        startActivity(Intent.createChooser(share, "Share link!"))
+    }
+    private fun isAccessibilityOn(context: Context): Boolean {
+        var accessibilityEnabled = 0
+        val service = context.packageName+"/"+WAccessibility::class.java.canonicalName
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(context.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED)
+        }
+        catch(e: Exception){ }
+        val colonSplitter = SimpleStringSplitter(':')
+        if(accessibilityEnabled == 1){
+            val settingValue = Settings.Secure.getString(context.contentResolver,  Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+            if (settingValue != null) {
+                colonSplitter.setString(settingValue)
+                while (colonSplitter.hasNext()) {
+                    val accessibilityService = colonSplitter.next()
+                    if (accessibilityService.equals(
+                            service,
+                            ignoreCase = true)
+                    ) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 }
