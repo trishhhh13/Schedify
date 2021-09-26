@@ -2,6 +2,7 @@ package com.trishala13kohad.myapplication
 
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -11,12 +12,19 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 
 class WAccessibility: AccessibilityService() {
 
+    var name = "Aai"
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent != null) {
+            name = intent.getStringExtra("UserID").toString()
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+
         if(rootInActiveWindow == null) return
 
         val preferenceManager = PreferenceManager(applicationContext)
         if(!preferenceManager.getISON()) return
-
         val rootNodeInfo: AccessibilityNodeInfoCompat
                 = AccessibilityNodeInfoCompat.wrap(rootInActiveWindow)
 
@@ -44,14 +52,11 @@ class WAccessibility: AccessibilityService() {
                         val arguments = Bundle()
                         arguments.putCharSequence(
                             AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
-                            "Name")
+                            name
+                        )
                         searchText.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
-                        try{
+
                             Thread.sleep(1000)
-                        }
-                        catch(e: Exception){
-                            e.printStackTrace()
-                        }
                         val contactPickerRowNode
                                 = rootNodeInfo.findAccessibilityNodeInfosByViewId(
                             "com.whatsapp:id/contactpicker_row_name")

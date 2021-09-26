@@ -1,6 +1,7 @@
 package com.trishala13kohad.myapplication
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -258,13 +259,28 @@ class MessageActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun startWhatsapp(name: String, message: String, eventId: Int) {
         val share = Intent(Intent.ACTION_SEND)
         preferenceManager.setISON(true)
         share.type = "text/plain"
         share.setPackage("com.whatsapp")
         share.putExtra(Intent.EXTRA_TEXT, message)
-        startActivity(Intent.createChooser(share, "Share link!"))
+        val serviceIntent =Intent(this, WAccessibility::class.java)
+        serviceIntent.putExtra("UserID", name)
+        val pendingIntentService = PendingIntent.getActivity(
+            this, eventId-1, serviceIntent, PendingIntent.FLAG_ONE_SHOT
+        )
+        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                cal.timeInMillis] =
+            pendingIntentService
+        val pendingIntent = PendingIntent.getActivity(
+            this, eventId, share, PendingIntent.FLAG_ONE_SHOT
+        )
+        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                cal.timeInMillis] =
+            pendingIntent
+
     }
     private fun isAccessibilityOn(context: Context): Boolean {
         var accessibilityEnabled = 0
@@ -291,4 +307,5 @@ class MessageActivity : AppCompatActivity() {
         }
         return false
     }
+
 }
