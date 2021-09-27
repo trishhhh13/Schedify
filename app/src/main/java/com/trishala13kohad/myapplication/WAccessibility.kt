@@ -37,6 +37,24 @@ class WAccessibility: AccessibilityService() {
         val rootNodeInfo: AccessibilityNodeInfoCompat
                 = AccessibilityNodeInfoCompat.wrap(rootInActiveWindow)
 
+        //getting send message view
+        var sendMessageNodeList = rootNodeInfo.findAccessibilityNodeInfosByViewId(
+                "com.whatsapp:id/send")
+
+        if(!sendMessageNodeList.isNullOrEmpty()){
+
+            //getting send message icon
+            val sendMessage = sendMessageNodeList[0]
+            if(sendMessage.isVisibleToUser) {
+
+                /* if send message icon is visible to user,
+                    perform click action*/
+                sendMessage.performAction(
+                    AccessibilityNodeInfo.ACTION_CLICK)
+            }
+            else Log.e("TAG", "Message couldn't be sent")
+        }
+
         //getting whatsapp search list
         val searchNodeList = rootNodeInfo.findAccessibilityNodeInfosByViewId(
             "com.whatsapp:id/menuitem_search")
@@ -95,7 +113,7 @@ class WAccessibility: AccessibilityService() {
                                         .performAction(AccessibilityNodeInfo.ACTION_CLICK)
 
                                     //getting send message view
-                                    val sendMessageNodeList =
+                                    sendMessageNodeList =
                                         rootNodeInfo.findAccessibilityNodeInfosByViewId(
                                             "com.whatsapp:id/send")
 
