@@ -18,32 +18,44 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
         repository = TaskRepository(dao)
         allTask = repository.allTask
     }
-    fun taskByTitle(title: String): List<Task> {
-        return repository.taskByTitle(title)
+
+    //function to get task by title and link
+    fun taskByTitle(title: String, link: String): List<Task> {
+        return repository.taskByTitle(title, link)
     }
-    fun taskByMessage(message: String): List<Task> {
-        return repository.taskByMessage(message)
+
+    //function to get task by name and message
+    fun taskByMessage(name: String, message: String): List<Task> {
+        return repository.taskByMessage(name, message)
     }
+    //function called when task is deleted
     fun deleteTask(task:Task){
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(task)
         }
     }
+    //function called when inserting a new task
     fun insertTask(task:Task){
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(task)
         }
     }
+
+    //function called when user update the meeting details
     fun updateTaskByTitle(title: String, name: String, url: String, message:
-    String, date: String, time: String, oldTitle: String?, eventId: Int) {
+    String, date: String, time: String, oldTitle: String?,oldLink:String?, eventId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.taskTitleUpdate(title, name, url, message, date, time, oldTitle, eventId)
+            repository.taskTitleUpdate(title, name, url, message, date, time,
+                oldTitle, oldLink, eventId)
         }
     }
+
+    //function called when user update the message details
     fun updateTaskByMessage(title: String, name: String, url: String, message:
-    String, date: String, time: String, oldName: String?, eventId: Int) {
+    String, date: String, time: String, oldName: String?,oldMsg: String?, eventId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.taskMessageUpdate(title, name, url, message, date, time, oldName, eventId)
+            repository.taskMessageUpdate(title, name, url, message, date,
+                time, oldName, oldMsg, eventId)
         }
     }
 

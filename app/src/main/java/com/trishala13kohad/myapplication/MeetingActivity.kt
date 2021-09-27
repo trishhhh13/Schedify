@@ -25,20 +25,23 @@ import android.app.PendingIntent
 import android.content.Intent
 
 
-
-
 class MeetingActivity : AppCompatActivity() {
+
     private lateinit var viewModel: TaskViewModel
-    private lateinit var dateInput: EditText
-    private lateinit var timeInput: EditText
-    lateinit var title: EditText
-    private var urli: String? = null
-    private lateinit var link: EditText
-    private var titlei: String? = null
-    private var datei: String? = null
-    private var timei: String? = null
-    private var eventI by Delegates.notNull<Int>()
-    private var edit = false
+
+    private lateinit var editTextDate: EditText
+    private lateinit var editTextTime: EditText
+    private lateinit var editTextTitle: EditText
+    private lateinit var editTextLink: EditText
+
+    private var previousLink: String? = null
+    private var previousTitle: String? = null
+    private var previousDate: String? = null
+    private var previousTime: String? = null
+    private var previousEventId by Delegates.notNull<Int>()
+
+    private var isEditing = false
+
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
 
@@ -46,28 +49,33 @@ class MeetingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meeting)
 
-        val intent = intent
-        titlei = intent.getStringExtra("title")
-        urli = intent.getStringExtra("url")
-        datei = intent.getStringExtra("date")
-        timei = intent.getStringExtra("time")
-        eventI= intent.getIntExtra("eventId", 0)
-        if (titlei != null && urli != null && datei != null) {
-            edit = true
-            title = findViewById(R.id.titleInput)
-            title.setText(titlei)
-            link = findViewById(R.id.linkInput)
-            link.setText(urli)
-            dateInput = findViewById(R.id.dateInputM)
-            dateInput.setText(datei)
-            timeInput = findViewById(R.id.timeInputM)
-            timeInput.setText(timei)
+        previousTitle = intent.getStringExtra("title")
+        previousLink = intent.getStringExtra("url")
+        previousDate = intent.getStringExtra("date")
+        previousTime = intent.getStringExtra("time")
+        previousEventId = intent.getIntExtra("eventId", 0)
+
+        //getting all input fields edittext
+        editTextLink = findViewById(R.id.linkInput)
+        editTextTitle = findViewById(R.id.titleInput)
+        editTextDate = findViewById(R.id.dateInputM)
+        editTextTime = findViewById(R.id.timeInputM)
+
+        if (previousTitle != null) {
+            //when editing a previous task
+            isEditing = true
+            editTextLink.setText(previousLink)
+            editTextTitle.setText(previousTitle)
+            editTextTime.setText(previousTime)
+            editTextDate.setText(previousDate)
         }
+
         viewModel = ViewModelProvider(this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(TaskViewModel::class.java)
-        dateInput = findViewById(R.id.dateInputM)
-        timeInput = findViewById(R.id.timeInputM)
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application))
+            .get(TaskViewModel::class.java)
+
+
+        //setting date in date picker dialog
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
@@ -75,50 +83,65 @@ class MeetingActivity : AppCompatActivity() {
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 updateDateInView()
             }
-        val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-            cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            cal.set(Calendar.MINUTE, minute)
 
-            updateTimeInView()
-        }
-        dateInput.setOnClickListener {
-            val bro = DatePickerDialog(
-                this@MeetingActivity,
-                dateSetListener,
+        //called when user wants to select date
+        editTextDate.setOnClickListener {
+            val datesPicker = DatePickerDialog(
+                this@MeetingActivity, dateSetListener,
                 // set DatePickerDialog to point to today's date when it loads up
                 cal.get(Calendar.YEAR),
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
             )
-            bro.datePicker.minDate = cali.timeInMillis
-            bro.show()
+
+            //setting the minimum date as today
+            datesPicker.datePicker.minDate = cali.timeInMillis
+            datesPicker.show()
         }
-        timeInput.setOnClickListener {
-            TimePickerDialog(
-                this@MeetingActivity, timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
+
+        //setting time in time picker dialog
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+            cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            cal.set(Calendar.MINUTE, minute)
+            updateTimeInView()
+        }
+
+        //called when user wants to select time
+        editTextTime.setOnClickListener {
+            TimePickerDialog(this@MeetingActivity,
+                timeSetListener, cal.get(Calendar.HOUR_OF_DAY),
                 cal.get(Calendar.MINUTE), false).show()
         }
+
+        //registering broadcast receiver
         val broadCastReceiver = NotificationReceiver()
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(broadCastReceiver, IntentFilter(NOTIFICATION_SERVICE))
     }
 
     private fun updateDateInView() {
-        val myFormat = "MM/dd/yyyy" // mention the format you need
-        val sdf = SimpleDateFormat(myFormat, Locale.US)
-        dateInput.setText(sdf.format(cal.time))
-    }
-
-    private fun updateTimeInView() {
+        //setting date in the edittext
         if (cal.timeInMillis >= cali.timeInMillis) {
-            val myFormat = "hh:mm aa"
-            val stf = SimpleDateFormat(myFormat, Locale.US)
-            timeInput.setText((stf.format(cal.time)))
+            val myFormat = "MM/dd/yyyy" // mention the format you need
+            val sdf = SimpleDateFormat(myFormat, Locale.US)
+            editTextDate.setText(sdf.format(cal.time))
         } else {
             Toast.makeText(this, "Invalid time", Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun updateTimeInView() {
+        //setting time in the edittext
+        if (cal.timeInMillis >= cali.timeInMillis) {
+            val myFormat = "hh:mm aa"
+            val stf = SimpleDateFormat(myFormat, Locale.US)
+            editTextTime.setText((stf.format(cal.time)))
+        } else {
+            Toast.makeText(this, "Invalid time", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    //called when clicked on done icon
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.act_menu, menu)
         return true
@@ -129,93 +152,101 @@ class MeetingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         val id = item.itemId
-        title = findViewById(R.id.titleInput)
-        link = findViewById(R.id.linkInput)
-        dateInput = findViewById(R.id.dateInputM)
-        timeInput = findViewById(R.id.timeInputM)
 
-        val eventId = Calendar.getInstance().timeInMillis.toInt()%10000
+        //setting eventId
+        val eventId = Calendar.getInstance().timeInMillis.toInt() % 10000
 
-        if (id == R.id.action_favorite && !edit) {
-            val titleInput = title.text.toString()
-            val linkInput = link.text.toString()
-            val dateInpu = dateInput.text.toString()
-            val timeInpu = timeInput.text.toString()
-            if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInpu.isNotEmpty()
-                && timeInpu.isNotEmpty()) {
-                    if(linkInput.isValidUrl()) {
-                        viewModel.insertTask(
-                            Task(
-                                titleInput, "", linkInput, "",
-                                dateInpu, timeInpu, eventId
-                            )
-                        )
-                        NotificationReceiver().scheduleNotification(
-                            this, cal.timeInMillis -
-                                    400000, "$titleInput - in few minutes", linkInput,
-                            eventId
-                        )
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
-                        val pendingIntent = PendingIntent.getActivity(
-                                this,
-                            eventId, intent, PendingIntent.FLAG_ONE_SHOT
-                        )
-                        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
-                                cal.timeInMillis] = pendingIntent
-                        finish()
-                    }
-                else{
+        val titleInput = editTextTitle.text.toString()
+        val linkInput = editTextLink.text.toString()
+        val dateInput = editTextDate.text.toString()
+        val timeInput = editTextTime.text.toString()
+
+        if (id == R.id.action_favorite && !isEditing) {
+
+            //When a new task is inserted and not edited the previously existing
+            if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInput.isNotEmpty()
+                && timeInput.isNotEmpty()) {
+
+                //when the fields are not empty
+                if (linkInput.isValidUrl()) {
+
+                    //inserting task in db when fields are not empty and provided link is valid
+                    viewModel.insertTask(Task(titleInput, "", linkInput, "",
+                            dateInput, timeInput, eventId))
+
+                    //scheduling notification few minutes before the scheduled meeting
+                    NotificationReceiver().scheduleNotification(this, cal.timeInMillis -
+                            400000, "$titleInput - in few minutes", linkInput, eventId)
+
+                    //scheduling meeting intent on time as provided
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
+                    val pendingIntent = PendingIntent.getActivity(this,
+                        eventId, intent, PendingIntent.FLAG_ONE_SHOT)
+                    (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                            cal.timeInMillis] = pendingIntent
+
+                    //finish and back to main activity
+                    finish()
+
+                } else {
+                    //showing toast message if the link isn't valid
                     Toast.makeText(this, "Provide a valid meeting link",
                         Toast.LENGTH_SHORT).show()
-                    }
-            }
-            else {
+                }
+            } else {
+                //showing toast message if the fields are incompletely filled
                 Toast.makeText(this, "Insert all the details", Toast.LENGTH_SHORT).show()
             }
-        } else if (id == R.id.action_favorite && edit) {
-            val titleIn = title.text.toString()
-            val linkIn = link.text.toString()
-            val dateIn = dateInput.text.toString()
-            val timeIn = timeInput.text.toString()
-            if (titleIn.isNotEmpty() && linkIn.isNotEmpty() && dateIn.isNotEmpty()
-                && timeIn.isNotEmpty()) {
-                if(linkIn.isValidUrl()) {
-                    viewModel.updateTaskByTitle(
-                        titleIn, "", linkIn, "",
-                        dateIn, timeIn, titlei, eventId
-                    )
-                    if (timeIn != timei && dateIn != datei) {
-                        NotificationReceiver().cancelNotification(
-                            this, titlei, urli,
-                            eventI
-                        )
-                        NotificationReceiver().scheduleNotification(
-                            this,
-                            cal.timeInMillis - 400000, "$titleIn - in few minutes", linkIn,
-                            eventId
-                        )
-                        PendingIntent.getBroadcast(
-                            this, eventI, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                        ).cancel()
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkIn))
+        }
+        //When editing the previously existing task
+        else if (id == R.id.action_favorite && isEditing) {
+
+            //when the fields are not empty
+            if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInput.isNotEmpty()
+                && timeInput.isNotEmpty()) {
+
+                //when fields are not empty and the link is valid
+                if (linkInput.isValidUrl()) {
+
+                    //updating the task details
+                    viewModel.updateTaskByTitle(titleInput, "", linkInput, "",
+                        dateInput, timeInput, previousTitle, previousLink, eventId)
+
+                    //when date and time is updated
+                    if (timeInput != previousTime && dateInput != previousDate) {
+
+                        //cancel previous notification
+                        NotificationReceiver().cancelNotification(this, previousTitle,
+                            previousLink, previousEventId)
+
+                        //Schedule new notification
+                        NotificationReceiver().scheduleNotification(this,
+                            cal.timeInMillis - 400000, "$titleInput - in few minutes",
+                            linkInput, eventId)
+
+                        //Cancel previously scheduled meeting
+                        PendingIntent.getBroadcast(this, previousEventId, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT).cancel()
+
+                        //Scheduling new intent with updated date and time
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
                         val pendingIntent = PendingIntent.getActivity(
-                            this, eventId, intent, PendingIntent.FLAG_ONE_SHOT
-                        )
+                            this, eventId, intent, PendingIntent.FLAG_ONE_SHOT)
                         (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
-                                cal.timeInMillis] =
-                            pendingIntent
+                                cal.timeInMillis] = pendingIntent
 
                     }
+                    //Back to main activity
                     finish()
                 }
             } else
+                //Show toast when details are incompletely filled
                 Toast.makeText(this, "Fill the details", Toast.LENGTH_SHORT).show()
             return true
         }
-
         return super.onOptionsItemSelected(item)
     }
+
     private fun String.isValidUrl(): Boolean = Patterns.WEB_URL.matcher(this).matches()
 
 }

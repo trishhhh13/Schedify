@@ -17,69 +17,95 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val channelId = "${context.packageName}-${context.getString(R.string.app_name)}"
 
-        val name = "my_package_channel"
-        val description = "my_package_first_channel"// The user-visible description of the channel.
+        val name = "schedify_channel"
+        // The user-visible description of the channel.
+        val description = "schedify_notification_channel"
+
         val builder: NotificationCompat.Builder
-        val notifManager =  context.getSystemService(Context.NOTIFICATION_SERVICE)
+
+        val notificationManager =  context.getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //setting the importance of the notification
             val importance = NotificationManager.IMPORTANCE_HIGH
+
+            //setting the notification builder with channel ID
             builder = NotificationCompat.Builder(context, channelId)
+
+            //defining notification channel
             val mChannel = NotificationChannel(channelId, name, importance)
                 mChannel.description = description
                 mChannel.enableVibration(true)
                 mChannel.lightColor = Color.GREEN
                 mChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-            notifManager.createNotificationChannel(mChannel)
+
+            //creating notification channel
+            notificationManager.createNotificationChannel(mChannel)
+
+            //initializing notification intent flags
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            builder.setContentTitle(intent.getStringExtra("title")) // required
-                .setSmallIcon(R.drawable.notification_icon) // required
-                .setContentText(intent.getStringExtra("text")) // required
+
+            //setting up title, text and other details of notification while building
+            builder.setContentTitle(intent.getStringExtra("title"))
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentText(intent.getStringExtra("text"))
                 .setDefaults(NotificationCompat.DEFAULT_SOUND)
                 .setAutoCancel(true)
                 .build()
+
         } else {
+
+            //setting the notification builder with channel ID
             builder = NotificationCompat.Builder(context, channelId)
+
+            //initializing notification intent flags
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+            //setting up title, text and other details of notification while building
             builder.setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(intent.getStringExtra("title"))
                 .setContentText(intent.getStringExtra("text"))
                 .setDefaults(NotificationCompat.DEFAULT_SOUND)
-                .build() // required
+                .build()
 
         }
         // Show notification
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE)
-                as NotificationManager
-        manager.notify((Calendar.getInstance().timeInMillis%10000).toInt(), builder.build())
-
+        notificationManager.notify((Calendar.getInstance().timeInMillis%10000).toInt(),
+            builder.build())
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
     @RequiresApi(Build.VERSION_CODES.M)
-    fun scheduleNotification(context: Context, time: Long, title: String?,
-                             text: String?, eventId: Int) {
+    fun scheduleNotification(context: Context, time: Long, title: String?, text: String?,
+                             eventId: Int) {//eventId for unique request code
+
+        //creating notification intent
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.putExtra("title", title)
         intent.putExtra("text", text)
-        val pending =
-            PendingIntent.getBroadcast(context,
-                eventId, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT)
-        // Schedule notification
-        val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pending)
+
+        //Scheduling the defined intent through pending intent
+        val pending = PendingIntent.getBroadcast(context, eventId, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        // Sync notification pending intent with time
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pending)
     }
+
     @SuppressLint("UnspecifiedImmutableFlag")
     fun cancelNotification(context: Context, title: String?, text: String?, eventId: Int) {
+
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.putExtra("title", title)
         intent.putExtra("text", text)
         intent.putExtra("eventId", eventId)
-        val pending =
-            PendingIntent.getBroadcast(context, eventId,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        //getting the pending intent
+        val pending = PendingIntent.getBroadcast(context, eventId, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
         // Cancel notification
         val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         manager.cancel(pending)

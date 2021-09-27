@@ -6,12 +6,12 @@ class TaskRepository(private val taskDao: TaskDao) {
 
     val allTask: LiveData<List<Task>> = taskDao.getAllTask()
 
-    fun taskByTitle(title: String): List<Task> {
-        return taskDao.findByTitle(title)
+    fun taskByTitle(title: String, link: String): List<Task> {
+        return taskDao.findByTitle(title, link)
     }
 
-    fun taskByMessage(message: String): List<Task> {
-        return taskDao.findByMessage(message)
+    fun taskByMessage(name: String, message: String): List<Task> {
+        return taskDao.findByMessage(name, message)
     }
 
     suspend fun insert(task: Task) {
@@ -30,9 +30,10 @@ class TaskRepository(private val taskDao: TaskDao) {
         date: String,
         time: String,
         oldTitle: String?,
+        oldLink: String?,
         eventId:Int
     ) {
-        taskDao.taskUpdateByTitle(title, name, url, message, date, time, oldTitle, eventId)
+        taskDao.taskUpdateByTitle(title, name, url, message, date, time, oldTitle, oldLink, eventId)
     }
 
     fun taskMessageUpdate(
@@ -43,9 +44,10 @@ class TaskRepository(private val taskDao: TaskDao) {
         date: String,
         time: String,
         oldName: String?,
+        oldMsg: String?,
         eventId: Int
     ) {
-        taskDao.taskUpdateByName(title, name, url, message, date, time, oldName, eventId)
+        taskDao.taskUpdateByName(title, name, url, message, date, time, oldName, oldMsg, eventId)
     }
 
 }

@@ -14,33 +14,49 @@ import androidx.recyclerview.widget.RecyclerView
 class TaskAdapter(private val context: Context, private val listener: TaskInterface): RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     private val allTask = ArrayList<Task>()
+
     inner class TaskViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
     {
-        val textView: TextView = itemView.findViewById(R.id.textList)
+        //task items in recycler view
+        val textView: TextView = itemView.findViewById(R.id.taskList)
         val delButton: ImageView = itemView.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val viewHolder= TaskViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item, parent, false))
+
+        //creating view holder
+        val viewHolder= TaskViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item,
+            parent, false))
+
+        //setting onClickListener to delete the task
         viewHolder.delButton.setOnClickListener {
-            listener.onItemClicked(allTask[viewHolder.adapterPosition])
+            listener.onDeleteClicked(allTask[viewHolder.adapterPosition])
         }
+
+        //setting onClickListener to open the task and view in detail
         viewHolder.textView.setOnClickListener {
-            listener.clickedMe(allTask[viewHolder.adapterPosition], viewHolder.adapterPosition)
+            listener.clickedListItem(allTask[viewHolder.adapterPosition], viewHolder.adapterPosition)
         }
+
         return viewHolder
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        val currentNote = allTask[position]
-        if(currentNote.title != "")
-            {holder.textView.text = currentNote.title}
+        //binding view holder
+        //setting the inserted task name to be displayed in the list
+        val currentTask = allTask[position]
+        lateinit var currentTaskText: String
+        if(currentTask.title != "")
+            { currentTaskText = "${currentTask.title} - ${currentTask.url}" }
         else
-        {holder.textView.text = currentNote.name}
+        { currentTaskText = "${currentTask.name} - ${currentTask.message}" }
+        holder.textView.text = currentTaskText
     }
 
     override fun getItemCount(): Int {
+        //getting the length of the task
         return allTask.size
+
     }
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(taskList: List<Task>){
@@ -50,6 +66,8 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         notifyDataSetChanged()
     }
     fun openMeeting(task: List<Task>){
+
+        //open meeting intent with details to edit
         val trying = Intent(context, MeetingActivity::class.java)
         trying.putExtra("title", task[0].title)
         trying.putExtra("url", task[0].url)
@@ -58,10 +76,13 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         trying.putExtra("eventId", task[0].eventId)
         startActivity(context, trying, null)
 
+        //updating changes being made
         notifyDataSetChanged()
 
     }
     fun openMessage(task: List<Task>){
+
+        //open message intent with details to edit
         val trying = Intent(context, MessageActivity::class.java)
         trying.putExtra("name", task[0].name)
         trying.putExtra("message", task[0].message)
@@ -70,11 +91,13 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         trying.putExtra("eventId", task[0].eventId)
         startActivity(context, trying, null)
 
+        //updating changes being made
         notifyDataSetChanged()
     }
 }
 
 interface TaskInterface{
-    fun onItemClicked(task: Task)
-    fun clickedMe(task:Task, position: Int)
+    //overridden in the main activity
+    fun onDeleteClicked(task: Task)
+    fun clickedListItem(task:Task, position: Int)
 }

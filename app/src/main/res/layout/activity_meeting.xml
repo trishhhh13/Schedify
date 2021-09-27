@@ -1,105 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
     <com.google.android.material.textfield.TextInputLayout
+        android:hint="@string/title"
         android:id="@+id/titleM"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        app:endIconMode="clear_text"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="28dp"
-        android:hint="@string/title"
-        app:endIconMode="clear_text"
-        app:startIconDrawable="@drawable/ic_baseline_title_24"
+        android:layout_marginStart="28dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:startIconDrawable="@drawable/ic_baseline_title_24"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/titleInput"
-            android:inputType="textCapSentences"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:hint="@string/link"
         android:id="@+id/link"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
+        app:endIconMode="clear_text"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="28dp"
-        android:hint="@string/link"
-        app:endIconMode="clear_text"
-        app:startIconDrawable="@drawable/ic_baseline_insert_link_24"
+        android:layout_marginStart="28dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleM">
+        app:layout_constraintTop_toBottomOf="@id/titleM"
+        app:startIconDrawable="@drawable/ic_baseline_insert_link_24"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/linkInput"
             android:inputType="text"
+            android:id="@+id/linkInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/dateM"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:focusable="false"
+        android:clickable="false"
+        android:hint="@string/date"
+        android:cursorVisible="false"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginStart="28dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/date"
-        android:layout_marginTop="28dp"
-        android:clickable="false"
-        android:cursorVisible="false"
-        android:focusable="false"
         android:focusableInTouchMode="false"
-        app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
-        android:layout_marginStart="28dp"
-        android:layout_marginEnd="28dp"
-        app:layout_constraintTop_toBottomOf="@id/link"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/link"
+        app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/dateInputM"
-            android:clickable="false"
-            android:cursorVisible="false"
             android:focusable="false"
-            android:focusableInTouchMode="false"
+            android:clickable="false"
+            android:id="@+id/dateInputM"
+            android:cursorVisible="false"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:hint="@string/time"
         android:id="@+id/timeM"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginEnd="28dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginStart="28dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/time"
-        android:layout_marginTop="28dp"
-        app:startIconDrawable="@drawable/ic_baseline_access_time_24"
-        android:layout_marginStart="28dp"
-        android:layout_marginEnd="28dp"
-        app:layout_constraintTop_toBottomOf="@id/dateM"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dateM"
+        app:startIconDrawable="@drawable/ic_baseline_access_time_24"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/timeInputM"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:focusable="false"
             android:inputType="time"
-            android:focusableInTouchMode="false"
+            android:focusable="false"
+            android:clickable="false"
+            android:id="@+id/timeInputM"
+            android:cursorVisible="false"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
