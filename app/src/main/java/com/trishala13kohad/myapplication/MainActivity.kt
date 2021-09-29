@@ -2,7 +2,6 @@ package com.trishala13kohad.myapplication
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,10 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 //This class contains recycler view containing scheduled meetings and messages
 class MainActivity : AppCompatActivity(), TaskInterface {
@@ -102,32 +97,6 @@ class MainActivity : AppCompatActivity(), TaskInterface {
 
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onDeleteClicked(task: Task) {
-
-        val meetingTitle = task.title
-        val meetingLink = task.url
-        var checkByTitle: List<Task>?= null
-
-        GlobalScope.launch {
-            //get task by title and link
-            checkByTitle = viewModel.taskByTitle(meetingTitle, meetingLink)
-
-        }
-
-//            if(checkByTitle.isNullOrEmpty()){
-//
-//                MeetingActivity().cancelMeetingAndNotification(task.title, task.url, task.eventId)
-//
-//            }
-//            else {
-//                //Cancel service intent of Whatsapp activity class
-//                val serviceIntent =Intent(MessageActivity().applicationContext, WAccessibility::class.java)
-//                PendingIntent.getService(MessageActivity().applicationContext, task.eventId,
-//                    serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel()
-//
-//                //Cancel message sending when deleting the task
-//                PendingIntent.getActivity(MessageActivity().applicationContext, task.eventId,
-//                    MessageActivity().intent, PendingIntent.FLAG_UPDATE_CURRENT).cancel()
-//            }
 
         viewModel.deleteTask(task)
 
