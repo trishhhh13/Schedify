@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+//Holds all the data needed for UI
 class TaskViewModel(application: Application): AndroidViewModel(application) {
 
     val allTask: LiveData<List<Task>>

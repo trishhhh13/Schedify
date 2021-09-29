@@ -24,7 +24,7 @@ import android.app.PendingIntent
 
 import android.content.Intent
 
-
+//Meeting activity to take input details from the user
 class MeetingActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TaskViewModel
@@ -225,7 +225,7 @@ class MeetingActivity : AppCompatActivity() {
                             linkInput, eventId)
 
                         //Cancel previously scheduled meeting
-                        PendingIntent.getBroadcast(this, previousEventId, intent,
+                        PendingIntent.getActivity(this, previousEventId, intent,
                             PendingIntent.FLAG_UPDATE_CURRENT).cancel()
 
                         //Scheduling new intent with updated date and time
@@ -248,6 +248,15 @@ class MeetingActivity : AppCompatActivity() {
     }
 
     private fun String.isValidUrl(): Boolean = Patterns.WEB_URL.matcher(this).matches()
+    fun cancelMeetingAndNotification(title: String, link: String, eventId: Int) {
+        //Cancel few minutes prior meeting alert notification
+        NotificationReceiver().cancelNotification(this, title,
+            link, eventId)
+
+        //Cancel meeting intent when deleted task
+        PendingIntent.getActivity(this, eventId, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT).cancel()
+    }
 
 }
 

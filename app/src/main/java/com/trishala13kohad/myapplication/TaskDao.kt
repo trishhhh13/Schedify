@@ -3,6 +3,8 @@ package com.trishala13kohad.myapplication
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+//Manages local data, SQLite data source using objects
+//Task Dao interface declaring queries for roomDB
 @Dao
 interface TaskDao {
 

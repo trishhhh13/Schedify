@@ -3,27 +3,34 @@ package com.trishala13kohad.myapplication
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import androidx.annotation.RequiresApi
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 
-
+//Class automates the actions using accessibility service to send scheduled whatsapp messages
 class WAccessibility: AccessibilityService() {
 
     private lateinit var name: String
+    private lateinit var message: String
+    private var eventId: Int = 0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
 
             //getting name to be searched
             name = intent.getStringExtra("UserID").toString()
+            message = intent.getStringExtra("SendMessage").toString()
+            eventId = intent.getIntExtra("eventId", 0)
 
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
 
         //if whatsapp window isn't active, return
@@ -51,6 +58,8 @@ class WAccessibility: AccessibilityService() {
                     perform click action*/
                 sendMessage.performAction(
                     AccessibilityNodeInfo.ACTION_CLICK)
+
+                Thread.sleep(1000)
             }
             else Log.e("TAG", "Message couldn't be sent")
         }
@@ -68,6 +77,8 @@ class WAccessibility: AccessibilityService() {
 
                 //click on search icon
                 searchIcon.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+
+                Thread.sleep(1000)
 
                 //now get the search text
                 val searchTextNodeList = rootNodeInfo.findAccessibilityNodeInfosByViewId(
@@ -112,6 +123,8 @@ class WAccessibility: AccessibilityService() {
                                     contactPickerRow.parent
                                         .performAction(AccessibilityNodeInfo.ACTION_CLICK)
 
+                                    Thread.sleep(1000)
+
                                     //getting send message view
                                     sendMessageNodeList =
                                         rootNodeInfo.findAccessibilityNodeInfosByViewId(
@@ -127,34 +140,81 @@ class WAccessibility: AccessibilityService() {
                                                 perform click action*/
                                             sendMessage.performAction(
                                                 AccessibilityNodeInfo.ACTION_CLICK)
-                                        }
-                                        else Log.e("TAG", "Message couldn't be sent")
-                                    }
-                                    else Log.e("TAG", "Message couldn't be sent")
-                                }
-                                else Log.e("TAG", "Contact not found!")
-                            }
-                            else Log.e("TAG", "Contact not found!")
-                        }
-                        else Log.e("TAG", "No contact on whatsapp")
-                    }
-                    else Log.e("TAG", "No contact on whatsapp")
-                }
-                else Log.e("TAG", "No contact on whatsapp")
-            }
-            else Log.e("TAG", "Message sending failed")
-        }
-        else Log.e("see", "Message sending failed")
 
-            Thread.sleep(5000)
+                                            Thread.sleep(1000)
+
+                                            NotificationReceiver().scheduleNotification(this,
+                                                System.currentTimeMillis()
+                                            , "Message sent to $name", message, eventId)
+
+                                        }
+
+                                        else{
+                                            NotificationReceiver().scheduleNotification(this,
+                                                System.currentTimeMillis()
+                                                , "Message could not be sent to $name", message, eventId)
+                                            Log.e("TAG", "Message couldn't be sent")
+                                        }
+                                    }
+                                    else {
+                                        NotificationReceiver().scheduleNotification(this,
+                                            System.currentTimeMillis()
+                                            , "Message could not be sent to $name", message, eventId)
+                                        Log.e("TAG", "Message couldn't be sent")
+                                    }
+                                }
+                                else {
+                                    NotificationReceiver().scheduleNotification(this,
+                                        System.currentTimeMillis()
+                                        , "Contact could not be found: $name", message, eventId)
+                                    Log.e("TAG", "Message couldn't be sent")
+                                }
+                            }
+                            else {
+                                NotificationReceiver().scheduleNotification(this,
+                                    System.currentTimeMillis()
+                                    , "Contact could not be found: $name", message, eventId)
+                                Log.e("TAG", "Message couldn't be sent")
+                            }
+                        }
+                        else {
+                            NotificationReceiver().scheduleNotification(this,
+                                System.currentTimeMillis()
+                                , "No contact found with the name $name", message, eventId)
+                            Log.e("TAG", "Message couldn't be sent")
+                        }
+                    }
+                    else {
+                        NotificationReceiver().scheduleNotification(this,
+                            System.currentTimeMillis()
+                            , "No contact found with the name $name", message, eventId)
+                        Log.e("TAG", "Message couldn't be sent")
+                    }
+                }
+                else {
+                    NotificationReceiver().scheduleNotification(this,
+                        System.currentTimeMillis()
+                        , "No contact found with the name $name", message, eventId)
+                    Log.e("TAG", "Message couldn't be sent")
+                }
+            }
+            else {
+                NotificationReceiver().scheduleNotification(this,
+                    System.currentTimeMillis()
+                    , "Failed to send message to $name", message, eventId)
+                Log.e("TAG", "Message couldn't be sent")
+            }
+        }
+
+            Thread.sleep(2000)
 
         // go to home page after sending message
         performGlobalAction(GLOBAL_ACTION_HOME)
         performGlobalAction(GLOBAL_ACTION_HOME)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onInterrupt() {
-        Log.e("TAG", "No contact on whatsapp")
     }
 
 

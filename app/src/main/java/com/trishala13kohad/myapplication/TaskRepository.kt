@@ -2,6 +2,7 @@ package com.trishala13kohad.myapplication
 
 import androidx.lifecycle.LiveData
 
+//Single source of truth for all app data
 class TaskRepository(private val taskDao: TaskDao) {
 
     val allTask: LiveData<List<Task>> = taskDao.getAllTask()

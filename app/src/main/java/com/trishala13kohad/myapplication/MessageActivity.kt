@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
 
-
+//Message activity to take input details from the user
 class MessageActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TaskViewModel
@@ -291,6 +291,8 @@ class MessageActivity : AppCompatActivity() {
         //explicit intent to start service
         val serviceIntent =Intent(this, WAccessibility::class.java)
         serviceIntent.putExtra("UserID", name)
+        serviceIntent.putExtra("SendMessage", message)
+        serviceIntent.putExtra("eventId", eventId)
 
         //initialising pending intent for accessibility service
         val pendingIntentService = PendingIntent.getService(this,

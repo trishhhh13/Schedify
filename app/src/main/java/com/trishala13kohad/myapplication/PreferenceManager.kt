@@ -3,6 +3,7 @@ package com.trishala13kohad.myapplication
 import android.content.Context
 import android.content.SharedPreferences
 
+//Class to know when the accessibility service is on
 class PreferenceManager(context: Context) {
 
     //getting sharedPreferences
