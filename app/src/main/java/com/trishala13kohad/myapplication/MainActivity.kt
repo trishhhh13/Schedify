@@ -12,6 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 //This class contains recycler view containing scheduled meetings and messages
 class MainActivity : AppCompatActivity(), TaskInterface {
@@ -20,7 +23,11 @@ class MainActivity : AppCompatActivity(), TaskInterface {
     private lateinit var recyclerView: RecyclerView
     private lateinit var fab: FloatingActionButton
     private lateinit var rootView: View
+    var del = false
 
+    fun setDelete(bool: Boolean){
+        del = bool
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -98,7 +105,31 @@ class MainActivity : AppCompatActivity(), TaskInterface {
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onDeleteClicked(task: Task) {
 
-        viewModel.deleteTask(task)
+        val meetingTitle = task.title
+        val meetingLink = task.url
+        val nameOfReceiver = task.name
+        val textMessage = task.message
+
+        GlobalScope.launch(Dispatchers.IO) {
+            //get task by title and link
+            val checkByTitle: List<Task> = viewModel.taskByTitle(meetingTitle, meetingLink)
+            //get message by message and name
+            val checkByMessage: List<Task> = viewModel.taskByMessage(nameOfReceiver, textMessage)
+
+            val taskAdapter = TaskAdapter(this@MainActivity, this@MainActivity)
+            if (meetingTitle.isNotEmpty())
+            //if the item selected is a scheduled meeting
+                taskAdapter.openMeetingToDelete(checkByTitle)
+            else
+            //if the item is a scheduled message
+                taskAdapter.openMessageToDelete(checkByMessage)
+        }
+        Thread.sleep(2000)
+
+        if(del) {
+            viewModel.deleteTask(task)
+            Toast.makeText(this, "Deleted the task", Toast.LENGTH_SHORT).show()
+        }
 
         recyclerView = findViewById(R.id.recyclerView)
         rootView = findViewById(R.id.rootView)
@@ -114,7 +145,6 @@ class MainActivity : AppCompatActivity(), TaskInterface {
             fab.show()
         }
 
-        Toast.makeText(this, "Deleted the task", Toast.LENGTH_SHORT).show()
 
     }
 

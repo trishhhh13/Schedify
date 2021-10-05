@@ -74,6 +74,7 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         trying.putExtra("date", task[0].date)
         trying.putExtra("time", task[0].time)
         trying.putExtra("eventId", task[0].eventId)
+        trying.putExtra("toDelete", false)
         startActivity(context, trying, null)
 
         //updating changes being made
@@ -89,10 +90,36 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
         trying.putExtra("date", task[0].date)
         trying.putExtra("time", task[0].time)
         trying.putExtra("eventId", task[0].eventId)
+        trying.putExtra("toDelete", false)
         startActivity(context, trying, null)
 
         //updating changes being made
         notifyDataSetChanged()
+    }
+
+    fun openMeetingToDelete(task: List<Task>) {
+
+        //open meeting intent with details to delete
+        val trying = Intent(context, MeetingActivity::class.java)
+        trying.putExtra("title", task[0].title)
+        trying.putExtra("url", task[0].url)
+        trying.putExtra("date", task[0].date)
+        trying.putExtra("time", task[0].time)
+        trying.putExtra("eventId", task[0].eventId)
+        trying.putExtra("toDelete", true)
+        startActivity(context, trying, null)
+    }
+    fun openMessageToDelete(task: List<Task>) {
+
+        //open meeting intent with details to delete
+        val trying = Intent(context, MeetingActivity::class.java)
+        trying.putExtra("title", task[0].title)
+        trying.putExtra("url", task[0].url)
+        trying.putExtra("date", task[0].date)
+        trying.putExtra("time", task[0].time)
+        trying.putExtra("eventId", task[0].eventId)
+        trying.putExtra("toDelete", true)
+        startActivity(context, trying, null)
     }
 }
 

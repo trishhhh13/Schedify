@@ -45,6 +45,7 @@ class MessageActivity : AppCompatActivity() {
     private var previousEventId by Delegates.notNull<Int>()
 
     private var isEditing = false
+    private var toDelete = false
 
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
@@ -82,6 +83,7 @@ class MessageActivity : AppCompatActivity() {
         previousMessage = intent.getStringExtra("message")
         previousDate = intent.getStringExtra("date")
         previousTime = intent.getStringExtra("time")
+        toDelete = intent.getBooleanExtra("toDelete", false)
 
         preferenceManager = PreferenceManager(applicationContext)
 

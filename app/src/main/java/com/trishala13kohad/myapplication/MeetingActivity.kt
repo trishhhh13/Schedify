@@ -23,6 +23,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 
 import android.content.Intent
+import android.widget.Button
+import android.widget.TextView
 
 //Meeting activity to take input details from the user
 class MeetingActivity : AppCompatActivity() {
@@ -41,6 +43,7 @@ class MeetingActivity : AppCompatActivity() {
     private var previousEventId by Delegates.notNull<Int>()
 
     private var isEditing = false
+    private var toDelete = false
 
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
@@ -54,6 +57,11 @@ class MeetingActivity : AppCompatActivity() {
         previousDate = intent.getStringExtra("date")
         previousTime = intent.getStringExtra("time")
         previousEventId = intent.getIntExtra("eventId", 0)
+        toDelete = intent.getBooleanExtra("toDelete", false)
+
+        if(toDelete){
+            deleteAlertDialog()
+        }
 
         //getting all input fields edittext
         editTextLink = findViewById(R.id.linkInput)
@@ -118,6 +126,26 @@ class MeetingActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(broadCastReceiver, IntentFilter(NOTIFICATION_SERVICE))
     }
+
+    private fun deleteAlertDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Are you sure you want to Delete?")
+            .setCancelable(false)
+            .setPositiveButton("DELETE") { dialog, id ->
+                // Delete selected note from database
+                cancelMeetingAndNotification(previousTitle!!, previousLink!!, previousEventId)
+                MainActivity().setDelete(true)
+                dialog.dismiss()
+                finish()
+            }
+            .setNegativeButton("CANCEL") { dialog, id ->
+                MainActivity().setDelete(false)
+                dialog.dismiss()
+                finish()
+            }
+        val alert = builder.create()
+        alert.show()
+        }
 
     private fun updateDateInView() {
         //setting date in the edittext
@@ -248,14 +276,17 @@ class MeetingActivity : AppCompatActivity() {
     }
 
     private fun String.isValidUrl(): Boolean = Patterns.WEB_URL.matcher(this).matches()
-    fun cancelMeetingAndNotification(title: String, link: String, eventId: Int) {
+
+    private fun cancelMeetingAndNotification(title: String, link: String, eventId: Int) {
         //Cancel few minutes prior meeting alert notification
         NotificationReceiver().cancelNotification(this, title,
             link, eventId)
 
         //Cancel meeting intent when deleted task
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
         PendingIntent.getActivity(this, eventId, intent,
             PendingIntent.FLAG_UPDATE_CURRENT).cancel()
+        finish()
     }
 
 }
