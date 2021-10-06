@@ -85,6 +85,7 @@ class MessageActivity : AppCompatActivity() {
         previousTime = intent.getStringExtra("time")
         toDelete = intent.getBooleanExtra("toDelete", false)
 
+
         preferenceManager = PreferenceManager(applicationContext)
 
         //getting all input field edittext
@@ -94,12 +95,15 @@ class MessageActivity : AppCompatActivity() {
         editTextMessage = findViewById(R.id.messageInput)
 
         if (previousName != null) {
+            if(!toDelete) {isEditing = true}
             //when editing a previous task
-            isEditing = true
             editTextTime.setText(previousTime)
             editTextName.setText(previousName)
             editTextDate.setText(previousDate)
             editTextMessage.setText(previousMessage)
+        }
+        if(toDelete){
+            deleteAlertDialog()
         }
 
         viewModel = ViewModelProvider(this,
@@ -154,6 +158,61 @@ class MessageActivity : AppCompatActivity() {
                 cal.get(Calendar.HOUR_OF_DAY),
                 cal.get(Calendar.MINUTE), false).show()
         }
+    }
+
+    @DelicateCoroutinesApi
+    private fun deleteAlertDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Are you sure you want to Delete?")
+            .setCancelable(false)
+            .setPositiveButton("DELETE") { dialog, id ->
+                // Delete selected note from database
+                cancelMessage(previousName!!, previousMessage!!, previousEventId)
+                dialog.dismiss()
+                GlobalScope.launch {
+                    val task: List<Task> = viewModel.taskByMessage(previousName!!, previousMessage!!)
+                    viewModel.deleteTask(task[0])
+                }
+                finish()
+            }
+            .setNegativeButton("CANCEL") { dialog, id ->
+                dialog.dismiss()
+                finish()
+            }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun cancelMessage(previousName: String, previousMessage: String, previousEventId: Int) {
+        preferenceManager.setISON(false)
+        //intent to open whatsapp intent
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.setPackage("com.whatsapp")
+        share.putExtra(Intent.EXTRA_TEXT, previousMessage)
+
+        //explicit intent to start service
+        val serviceIntent =Intent(this, WAccessibility::class.java)
+        serviceIntent.putExtra("UserID", previousName)
+        serviceIntent.putExtra("SendMessage", previousMessage)
+        serviceIntent.putExtra("eventId", previousEventId)
+
+        //initialising pending intent for accessibility service
+        val pendingIntentService = PendingIntent.getService(this,
+            previousEventId, serviceIntent, PendingIntent.FLAG_ONE_SHOT)
+        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                cal.timeInMillis-10] = pendingIntentService
+
+        pendingIntentService.cancel()
+
+        //initialising pending intent to open whatsapp
+        val pendingIntent = PendingIntent.getActivity(
+            this, previousEventId, share, PendingIntent.FLAG_ONE_SHOT)
+        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                cal.timeInMillis] = pendingIntent
+
+        pendingIntent.cancel()
     }
 
     private fun updateDateInView() {

@@ -68,14 +68,13 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
     fun openMeeting(task: List<Task>){
 
         //open meeting intent with details to edit
-        val trying = Intent(context, MeetingActivity::class.java)
-        trying.putExtra("title", task[0].title)
-        trying.putExtra("url", task[0].url)
-        trying.putExtra("date", task[0].date)
-        trying.putExtra("time", task[0].time)
-        trying.putExtra("eventId", task[0].eventId)
-        trying.putExtra("toDelete", false)
-        startActivity(context, trying, null)
+        val openMeetingIntent = Intent(context, MeetingActivity::class.java)
+        openMeetingIntent.putExtra("title", task[0].title)
+        openMeetingIntent.putExtra("url", task[0].url)
+        openMeetingIntent.putExtra("date", task[0].date)
+        openMeetingIntent.putExtra("time", task[0].time)
+        openMeetingIntent.putExtra("eventId", task[0].eventId)
+        startActivity(context, openMeetingIntent, null)
 
         //updating changes being made
         notifyDataSetChanged()
@@ -84,14 +83,13 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
     fun openMessage(task: List<Task>){
 
         //open message intent with details to edit
-        val trying = Intent(context, MessageActivity::class.java)
-        trying.putExtra("name", task[0].name)
-        trying.putExtra("message", task[0].message)
-        trying.putExtra("date", task[0].date)
-        trying.putExtra("time", task[0].time)
-        trying.putExtra("eventId", task[0].eventId)
-        trying.putExtra("toDelete", false)
-        startActivity(context, trying, null)
+        val openMessageIntent = Intent(context, MessageActivity::class.java)
+        openMessageIntent.putExtra("name", task[0].name)
+        openMessageIntent.putExtra("message", task[0].message)
+        openMessageIntent.putExtra("date", task[0].date)
+        openMessageIntent.putExtra("time", task[0].time)
+        openMessageIntent.putExtra("eventId", task[0].eventId)
+        startActivity(context, openMessageIntent, null)
 
         //updating changes being made
         notifyDataSetChanged()
@@ -100,26 +98,32 @@ class TaskAdapter(private val context: Context, private val listener: TaskInterf
     fun openMeetingToDelete(task: List<Task>) {
 
         //open meeting intent with details to delete
-        val trying = Intent(context, MeetingActivity::class.java)
-        trying.putExtra("title", task[0].title)
-        trying.putExtra("url", task[0].url)
-        trying.putExtra("date", task[0].date)
-        trying.putExtra("time", task[0].time)
-        trying.putExtra("eventId", task[0].eventId)
-        trying.putExtra("toDelete", true)
-        startActivity(context, trying, null)
+        val openMeetingIntent = Intent(context, MeetingActivity::class.java)
+        openMeetingIntent.putExtra("title", task[0].title)
+        openMeetingIntent.putExtra("url", task[0].url)
+        openMeetingIntent.putExtra("date", task[0].date)
+        openMeetingIntent.putExtra("time", task[0].time)
+        openMeetingIntent.putExtra("eventId", task[0].eventId)
+        openMeetingIntent.putExtra("toDelete", true)
+        startActivity(context, openMeetingIntent, null)
+
+        //updating changes being made
+        notifyDataSetChanged()
     }
     fun openMessageToDelete(task: List<Task>) {
 
-        //open meeting intent with details to delete
-        val trying = Intent(context, MeetingActivity::class.java)
-        trying.putExtra("title", task[0].title)
-        trying.putExtra("url", task[0].url)
-        trying.putExtra("date", task[0].date)
-        trying.putExtra("time", task[0].time)
-        trying.putExtra("eventId", task[0].eventId)
-        trying.putExtra("toDelete", true)
-        startActivity(context, trying, null)
+        //open message intent with details to delete
+        val openMessageIntent = Intent(context, MessageActivity::class.java)
+        openMessageIntent.putExtra("name", task[0].name)
+        openMessageIntent.putExtra("message", task[0].message)
+        openMessageIntent.putExtra("date", task[0].date)
+        openMessageIntent.putExtra("time", task[0].time)
+        openMessageIntent.putExtra("eventId", task[0].eventId)
+        openMessageIntent.putExtra("toDelete", true)
+        startActivity(context, openMessageIntent, null)
+
+        //updating changes being made
+        notifyDataSetChanged()
     }
 }
 

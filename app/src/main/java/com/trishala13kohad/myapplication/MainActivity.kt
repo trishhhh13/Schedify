@@ -118,18 +118,13 @@ class MainActivity : AppCompatActivity(), TaskInterface {
 
             val taskAdapter = TaskAdapter(this@MainActivity, this@MainActivity)
             if (meetingTitle.isNotEmpty())
-            //if the item selected is a scheduled meeting
+            //if the task to be deleted is a scheduled meeting
                 taskAdapter.openMeetingToDelete(checkByTitle)
             else
-            //if the item is a scheduled message
+            //if the task to be deleted is a scheduled message
                 taskAdapter.openMessageToDelete(checkByMessage)
         }
-        Thread.sleep(2000)
 
-        if(del) {
-            viewModel.deleteTask(task)
-            Toast.makeText(this, "Deleted the task", Toast.LENGTH_SHORT).show()
-        }
 
         recyclerView = findViewById(R.id.recyclerView)
         rootView = findViewById(R.id.rootView)

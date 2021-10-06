@@ -2,6 +2,7 @@ package com.trishala13kohad.myapplication
 
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
@@ -15,16 +16,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
-import android.app.AlarmManager
-
 import android.app.PendingIntent
+import kotlinx.coroutines.DelicateCoroutinesApi
 
-import android.content.Intent
-import android.widget.Button
-import android.widget.TextView
 
 //Meeting activity to take input details from the user
 class MeetingActivity : AppCompatActivity() {
@@ -48,6 +47,7 @@ class MeetingActivity : AppCompatActivity() {
     private var cal: Calendar = Calendar.getInstance()
     private var cali: Calendar = Calendar.getInstance()
 
+    @DelicateCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_meeting)
@@ -59,9 +59,6 @@ class MeetingActivity : AppCompatActivity() {
         previousEventId = intent.getIntExtra("eventId", 0)
         toDelete = intent.getBooleanExtra("toDelete", false)
 
-        if(toDelete){
-            deleteAlertDialog()
-        }
 
         //getting all input fields edittext
         editTextLink = findViewById(R.id.linkInput)
@@ -71,11 +68,14 @@ class MeetingActivity : AppCompatActivity() {
 
         if (previousTitle != null) {
             //when editing a previous task
-            isEditing = true
+                if(!toDelete) {isEditing = true}
             editTextLink.setText(previousLink)
             editTextTitle.setText(previousTitle)
             editTextTime.setText(previousTime)
             editTextDate.setText(previousDate)
+        }
+        if(toDelete){
+            deleteAlertDialog()
         }
 
         viewModel = ViewModelProvider(this,
@@ -127,6 +127,7 @@ class MeetingActivity : AppCompatActivity() {
             .registerReceiver(broadCastReceiver, IntentFilter(NOTIFICATION_SERVICE))
     }
 
+    @DelicateCoroutinesApi
     private fun deleteAlertDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Are you sure you want to Delete?")
@@ -134,12 +135,14 @@ class MeetingActivity : AppCompatActivity() {
             .setPositiveButton("DELETE") { dialog, id ->
                 // Delete selected note from database
                 cancelMeetingAndNotification(previousTitle!!, previousLink!!, previousEventId)
-                MainActivity().setDelete(true)
                 dialog.dismiss()
+                GlobalScope.launch {
+                    val task: List<Task> = viewModel.taskByTitle(previousTitle!!, previousLink!!)
+                    viewModel.deleteTask(task[0])
+                }
                 finish()
             }
             .setNegativeButton("CANCEL") { dialog, id ->
-                MainActivity().setDelete(false)
                 dialog.dismiss()
                 finish()
             }
@@ -189,7 +192,7 @@ class MeetingActivity : AppCompatActivity() {
         val dateInput = editTextDate.text.toString()
         val timeInput = editTextTime.text.toString()
 
-        if (id == R.id.action_favorite && !isEditing) {
+        if (id == R.id.action_favorite && !isEditing && !toDelete) {
 
             //When a new task is inserted and not edited the previously existing
             if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInput.isNotEmpty()
@@ -204,7 +207,7 @@ class MeetingActivity : AppCompatActivity() {
 
                     //scheduling notification few minutes before the scheduled meeting
                     NotificationReceiver().scheduleNotification(this, cal.timeInMillis -
-                            400000, "$titleInput - in few minutes", linkInput, eventId)
+                            300000, "$titleInput - in few minutes", linkInput, eventId)
 
                     //scheduling meeting intent on time as provided
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
@@ -227,7 +230,7 @@ class MeetingActivity : AppCompatActivity() {
             }
         }
         //When editing the previously existing task
-        else if (id == R.id.action_favorite && isEditing) {
+        else if (id == R.id.action_favorite && isEditing && !toDelete) {
 
             //when the fields are not empty
             if (titleInput.isNotEmpty() && linkInput.isNotEmpty() && dateInput.isNotEmpty()
@@ -243,18 +246,14 @@ class MeetingActivity : AppCompatActivity() {
                     //when date and time is updated
                     if (timeInput != previousTime && dateInput != previousDate) {
 
-                        //cancel previous notification
-                        NotificationReceiver().cancelNotification(this, previousTitle,
-                            previousLink, previousEventId)
+
+                        //Cancel previously scheduled meeting and notification
+                        cancelMeetingAndNotification(previousTitle!!, previousLink!!, eventId)
 
                         //Schedule new notification
                         NotificationReceiver().scheduleNotification(this,
                             cal.timeInMillis - 400000, "$titleInput - in few minutes",
                             linkInput, eventId)
-
-                        //Cancel previously scheduled meeting
-                        PendingIntent.getActivity(this, previousEventId, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT).cancel()
 
                         //Scheduling new intent with updated date and time
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
@@ -277,16 +276,20 @@ class MeetingActivity : AppCompatActivity() {
 
     private fun String.isValidUrl(): Boolean = Patterns.WEB_URL.matcher(this).matches()
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun cancelMeetingAndNotification(title: String, link: String, eventId: Int) {
         //Cancel few minutes prior meeting alert notification
-        NotificationReceiver().cancelNotification(this, title,
-            link, eventId)
+        NotificationReceiver().cancelNotification(this, title, link, eventId)
 
         //Cancel meeting intent when deleted task
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-        PendingIntent.getActivity(this, eventId, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT).cancel()
-        finish()
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(previousLink))
+        val pendingIntent = PendingIntent.getActivity(
+            this, eventId, intent, PendingIntent.FLAG_ONE_SHOT)
+        (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
+                cal.timeInMillis] = pendingIntent
+
+        //Cancel intent
+        pendingIntent.cancel()
     }
 
 }
