@@ -25,9 +25,6 @@ class MainActivity : AppCompatActivity(), TaskInterface {
     private lateinit var rootView: View
     var del = false
 
-    fun setDelete(bool: Boolean){
-        del = bool
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
