@@ -2,6 +2,7 @@ package com.trishala13kohad.myapplication
 
 
 import android.accessibilityservice.AccessibilityService
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+
 
 //Class automates the actions using accessibility service to send scheduled whatsapp messages
 class WAccessibility: AccessibilityService() {
@@ -30,8 +32,10 @@ class WAccessibility: AccessibilityService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+
 
         //if whatsapp window isn't active, return
         if(rootInActiveWindow == null) return

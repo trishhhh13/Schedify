@@ -19,7 +19,7 @@ interface TaskDao {
     //update task of old name and message
     @Query("Update task_table SET title=:title, name=:name, url=:url, message=:message," +
             " date=:date, time=:time, eventId=:eventId" +
-            " WHERE name LIKE :oldName LIKE :oldMsg")
+            " WHERE name LIKE :oldName AND message LIKE :oldMsg")
     fun taskUpdateByName(title: String, name: String, url: String, message: String,
                          date: String, time: String, oldName: String?, oldMsg:String?, eventId: Int)
 
@@ -29,7 +29,7 @@ interface TaskDao {
     //update task of old title and link
     @Query("Update task_table SET title=:title, name=:name, url=:url, " +
             "message=:message, date=:date, time=:time, eventId=:eventId " +
-            "WHERE title LIKE :oldTitle LIKE :oldLink")
+            "WHERE title LIKE :oldTitle AND url LIKE :oldLink")
     fun taskUpdateByTitle(title: String, name: String, url: String, message: String,
                           date: String, time: String, oldTitle: String?, oldLink: String?,
                           eventId: Int)

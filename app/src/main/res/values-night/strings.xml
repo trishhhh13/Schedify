@@ -7,14 +7,13 @@
     <string name="message">Whatsapp message to be sent</string>
     <string name="title">Title</string>
     <string name="done">Done</string>
-    <string name="name">Name</string>
+    <string name="name">Enter the name of contact or group</string>
     <string name="go_to_other_activity">Go to other activity</string>
     <string name="textview">TextView</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="delete_task">Delete task</string>
-    <string name="cannot_retrieve">You\'ll not be able to retrieve data…</string>
-    <string name="welcome_to_gfg">Welcome to GFG</string>
     <string name="title_text_msg">Title text msg</string>
     <string name="delete">Delete</string>
     <string name="cancel">cancel</string>
+    <string name="notification_title">Notification Title</string>
 </resources>

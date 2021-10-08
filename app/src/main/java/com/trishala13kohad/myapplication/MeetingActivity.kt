@@ -244,8 +244,7 @@ class MeetingActivity : AppCompatActivity() {
                         dateInput, timeInput, previousTitle, previousLink, eventId)
 
                     //when date and time is updated
-                    if (timeInput != previousTime && dateInput != previousDate) {
-
+                    if (timeInput != previousTime || dateInput != previousDate) {
 
                         //Cancel previously scheduled meeting and notification
                         cancelMeetingAndNotification(previousTitle!!, previousLink!!, eventId)

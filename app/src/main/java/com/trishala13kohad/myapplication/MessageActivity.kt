@@ -53,26 +53,6 @@ class MessageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_message)
 
-//        val resultLauncher =
-//            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//                //register for result
-//                if (result.resultCode == Activity.RESULT_OK) {
-//                    // getting data from the contact intent
-//                    val data: Intent? = result.data
-//
-//                    val contactUri = data?.data ?: return@registerForActivityResult
-//                    val cols = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER,
-//                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-//
-//                    val rs = contentResolver.query(contactUri, cols, null,
-//                        null, null)
-//                    if (rs?.moveToFirst()!!) {
-//                        editTextName.setText(rs.getString(1))
-//                    }
-//                    rs.close()
-//                }
-//            }
-
         //getting values if editing previous task
         previousEventId= intent.getIntExtra("eventId", 0)
         previousName = intent.getStringExtra("name")
@@ -105,19 +85,6 @@ class MessageActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)).
         get(TaskViewModel::class.java)
-
-//        editTextName.setOnClickListener{
-////            if(!hasPermission()){
-////                requestPermission()
-////            }
-////            else {
-////                val i = Intent(Intent.ACTION_PICK)
-////                i.setPackage("com.whatsapp")
-////                GlobalScope.launch(Dispatchers.IO) {
-////                    resultLauncher.launch(i)
-////                }
-////            }
-//        }
 
         //setting date in date picker dialog
         val dateSetListener =
@@ -232,28 +199,6 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-//    private fun hasPermission(): Boolean{
-//        //getting permission to read contact
-//        return ActivityCompat.checkSelfPermission(
-//                this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
-//    }
-
-//    @RequiresApi(Build.VERSION_CODES.M)
-//    private fun requestPermission(){
-//        //requesting permission
-//        val permission = mutableListOf<String>()
-//        if(!shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)){
-//            Toast.makeText(this, "Contact permission is required to send message."
-//                ,Toast.LENGTH_SHORT).show()
-//        }
-//        if (!hasPermission()) {
-//            permission.add(Manifest.permission.READ_CONTACTS)
-//        }
-//        if (permission.isNotEmpty()) {
-//            ActivityCompat.requestPermissions(this, permission.toTypedArray(), 0)
-//        }
-//    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.act_menu, menu)
         return true
@@ -280,23 +225,23 @@ class MessageActivity : AppCompatActivity() {
 
                     nameInput = EmojiParser.removeAllEmojis(nameInput)
 
-                //inserting task in db when fields are not empty and provided link is valid
-                viewModel.insertTask(Task("", nameInput,"",
-                    messageInput, dateInput, timeInput,eventId))
 
                 if(!isAccessibilityOn(applicationContext)){
                     //Checking accessibility for automation
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-
-                    Thread.sleep(5000)
-
+                        askUserToEnable()
                 }
-                //call function to schedule message
-                startWhatsapp(nameInput, messageInput, eventId)
-                //finish and back to main activity
-                finish()
+                else {
+                    //inserting task in db when fields are not empty and provided link is valid
+                    viewModel.insertTask(
+                        Task("", nameInput, "",
+                            messageInput, dateInput, timeInput, eventId
+                        )
+                    )
+                    //call function to schedule message
+                    startWhatsapp(nameInput, messageInput, eventId)
+                    //finish and back to main activity
+                    finish()
+                }
             }
             else
             //showing toast message if the fields are incompletely filled
@@ -310,26 +255,24 @@ class MessageActivity : AppCompatActivity() {
             if(nameInput.isNotEmpty() && messageInput.isNotEmpty() && dateInput.isNotEmpty()
                 && timeInput.isNotEmpty()){
                 nameInput = EmojiParser.removeAllEmojis(nameInput)
-                //updating the task details
-                viewModel.updateTaskByMessage("",  nameInput,"",
-                    messageInput, dateInput, timeInput, previousName, previousMessage, eventId)
 
                 if(!isAccessibilityOn(applicationContext)){
-                    //if the accessibility is on for automation
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-
-                    Thread.sleep(5000)
-
+                    //Checking accessibility for automation
+                    askUserToEnable()
                 }
-                if (timeInput != previousTime && dateInput != previousDate) {
-                    cancelMessage(previousName!!, previousMessage!!, previousEventId)
-                    //call function to schedule message
-                    startWhatsapp(nameInput, messageInput, eventId)
+                else {
+                    //updating the task details
+                    viewModel.updateTaskByMessage("",  nameInput,"",
+                        messageInput, dateInput, timeInput, previousName, previousMessage, eventId)
+
+                    if (timeInput != previousTime || dateInput != previousDate) {
+                        cancelMessage(previousName!!, previousMessage!!, previousEventId)
+                        //call function to schedule message
+                        startWhatsapp(nameInput, messageInput, eventId)
+                    }
+                    //finish and back to main activity
+                    finish()
                 }
-                //finish and back to main activity
-                finish()
             }
               else
             //showing toast message if the fields are incompletely filled
@@ -337,6 +280,27 @@ class MessageActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun askUserToEnable() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Schedify")
+        builder.setMessage("To serve you better, Schedify needs to be granted permission in" +
+                "accessibility settings. \n \nThis is only for Whatsapp automation purposes. Your" +
+                "data & actions will remain confidential and secure.")
+            .setCancelable(false)
+            .setPositiveButton("ENABLE SERVICE") { dialog, id ->
+                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                dialog.dismiss()
+            }
+            .setNegativeButton("CANCEL") { dialog, id ->
+                dialog.dismiss()
+            }
+        val alert = builder.create()
+        alert.show()
+
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
