@@ -1,6 +1,5 @@
 package com.trishala13kohad.myapplication
 
-import android.annotation.SuppressLint
 import android.app.*
 import android.content.Intent
 import android.content.IntentFilter
@@ -111,6 +110,7 @@ class MeetingActivity : AppCompatActivity() {
         val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
             cal.set(Calendar.MINUTE, minute)
+            cal.set(Calendar.SECOND, 0)
             updateTimeInView()
         }
 
@@ -178,7 +178,6 @@ class MeetingActivity : AppCompatActivity() {
         return true
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
@@ -212,7 +211,7 @@ class MeetingActivity : AppCompatActivity() {
                     //scheduling meeting intent on time as provided
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
                     val pendingIntent = PendingIntent.getActivity(this,
-                        eventId, intent, PendingIntent.FLAG_ONE_SHOT)
+                        eventId, intent, PendingIntent.FLAG_IMMUTABLE)
                     (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
                             cal.timeInMillis] = pendingIntent
 
@@ -257,7 +256,7 @@ class MeetingActivity : AppCompatActivity() {
                         //Scheduling new intent with updated date and time
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInput))
                         val pendingIntent = PendingIntent.getActivity(
-                            this, eventId, intent, PendingIntent.FLAG_ONE_SHOT)
+                            this, eventId, intent, PendingIntent.FLAG_IMMUTABLE)
                         (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
                                 cal.timeInMillis] = pendingIntent
 
@@ -275,7 +274,6 @@ class MeetingActivity : AppCompatActivity() {
 
     private fun String.isValidUrl(): Boolean = Patterns.WEB_URL.matcher(this).matches()
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     private fun cancelMeetingAndNotification(title: String, link: String, eventId: Int) {
         //Cancel few minutes prior meeting alert notification
         NotificationReceiver().cancelNotification(this, title, link, eventId)
@@ -283,7 +281,7 @@ class MeetingActivity : AppCompatActivity() {
         //Cancel meeting intent when deleted task
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(previousLink))
         val pendingIntent = PendingIntent.getActivity(
-            this, eventId, intent, PendingIntent.FLAG_ONE_SHOT)
+            this, eventId, intent, PendingIntent.FLAG_IMMUTABLE)
         (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
                 cal.timeInMillis] = pendingIntent
 

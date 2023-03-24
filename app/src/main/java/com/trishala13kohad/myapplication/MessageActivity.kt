@@ -112,6 +112,7 @@ class MessageActivity : AppCompatActivity() {
         val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
             cal.set(Calendar.MINUTE, minute)
+            cal.set(Calendar.SECOND, 0)
             updateTimeInView()
         }
 
@@ -163,7 +164,7 @@ class MessageActivity : AppCompatActivity() {
 
         //initialising pending intent for accessibility service
         val pendingIntentService = PendingIntent.getService(this,
-            previousEventId, serviceIntent, PendingIntent.FLAG_ONE_SHOT)
+            previousEventId, serviceIntent, PendingIntent.FLAG_IMMUTABLE)
         (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
                 cal.timeInMillis-10] = pendingIntentService
 
@@ -171,7 +172,7 @@ class MessageActivity : AppCompatActivity() {
 
         //initialising pending intent to open whatsapp
         val pendingIntent = PendingIntent.getActivity(
-            this, previousEventId, share, PendingIntent.FLAG_ONE_SHOT)
+            this, previousEventId, share, PendingIntent.FLAG_IMMUTABLE)
         (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
                 cal.timeInMillis] = pendingIntent
 
@@ -303,7 +304,6 @@ class MessageActivity : AppCompatActivity() {
 
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     private fun startWhatsapp(name: String, message: String, eventId: Int) {
 
         //setting preference manager isOn true
@@ -323,13 +323,13 @@ class MessageActivity : AppCompatActivity() {
 
         //initialising pending intent for accessibility service
         val pendingIntentService = PendingIntent.getService(this,
-            eventId, serviceIntent, PendingIntent.FLAG_ONE_SHOT)
+            eventId, serviceIntent, PendingIntent.FLAG_IMMUTABLE)
         (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
                 cal.timeInMillis-10] = pendingIntentService
 
         //initialising pending intent to open whatsapp
         val pendingIntent = PendingIntent.getActivity(
-            this, eventId, share, PendingIntent.FLAG_ONE_SHOT)
+            this, eventId, share, PendingIntent.FLAG_IMMUTABLE)
         (getSystemService(ALARM_SERVICE) as AlarmManager)[AlarmManager.RTC_WAKEUP,
                 cal.timeInMillis] = pendingIntent
 
