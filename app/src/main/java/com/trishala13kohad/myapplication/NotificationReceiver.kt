@@ -1,6 +1,5 @@
 package com.trishala13kohad.myapplication
 
-import android.annotation.SuppressLint
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -75,7 +74,6 @@ class NotificationReceiver : BroadcastReceiver() {
             builder.build())
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     @RequiresApi(Build.VERSION_CODES.M)
     fun scheduleNotification(context: Context, time: Long, title: String?, text: String?,
                              eventId: Int) {//eventId for unique request code
@@ -87,14 +85,13 @@ class NotificationReceiver : BroadcastReceiver() {
 
         //Scheduling the defined intent through pending intent
         val pending = PendingIntent.getBroadcast(context, eventId, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.FLAG_IMMUTABLE)
 
         // Sync notification pending intent with time
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pending)
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     fun cancelNotification(context: Context, title: String?, text: String?, eventId: Int) {
 
         val intent = Intent(context, NotificationReceiver::class.java)
@@ -104,7 +101,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         //getting the pending intent
         val pending = PendingIntent.getBroadcast(context, eventId, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+            PendingIntent.FLAG_IMMUTABLE)
 
         // Cancel notification
         val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
